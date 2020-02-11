@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Rabbit Den
+  - Hunter Shed
+  - Hunter
+  - Rabbit
+  - Carrot
+  - Ammo Storage
   layers:
   - Default
   - TransparentFX
