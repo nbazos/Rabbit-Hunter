@@ -13,6 +13,8 @@ public class Agent : MonoBehaviour
     private List<Action> possibleActions;
     private Queue<Action> plannedActions;
 
+    private I_InfoBridge infoBridge;
+
     private Planner actionPlanner;
 
     // Start is called before the first frame update
@@ -31,4 +33,136 @@ public class Agent : MonoBehaviour
         fSM.Update(gameObject);
     }
 
+    public void AddPossibleAction(Action action)
+    {
+        possibleActions.Add(action);
+    }
+
+    public void RemovePossibleAction(Action action)
+    {
+        possibleActions.Remove(action);
+    }
+
+    private bool ActionPlanActive()
+    {
+        if(plannedActions.Count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void IdleState()
+    {
+        idle = (fSM, gameObject) =>
+        {
+            List<KeyValuePair<string, object>> stateofWorld = infoBridge.RetrieveWorldState();
+            List<KeyValuePair<string, object>> goal = infoBridge.SetGoal();
+
+            Queue<Action> plan = actionPlanner.Plan(gameObject, possibleActions, stateofWorld, goal);
+
+            if(plan != null)
+            {
+                plannedActions = plan;
+                // infoBridge.PlanSuccess(goal, plan);
+
+                fSM.Pop();
+                fSM.Push(doAction);
+            }
+            else
+            {
+                // infoBridge.PlanInvalid(goal);
+                fSM.Pop();
+                fSM.Push(idle);
+            }
+        };
+    }
+
+    private void MoveToState()
+    {
+        moveTo = (fSM, gameObject) =>
+        {
+            Action action = plannedActions.Peek();
+
+            if(action.target == null && action.IsRangeBased())
+            {
+                fSM.Pop();
+                fSM.Pop();
+                fSM.Push(idle);
+            }
+
+            if(infoBridge.IsAgentAtTarget(action))
+            {
+                fSM.Pop();
+            }
+        };
+    }
+
+    private void DoActionState()
+    {
+        doAction = (fSM, gameObject) =>
+        {
+            if(!ActionPlanActive())
+            {
+                fSM.Pop();
+                fSM.Push(idle);
+                // infoBridge.AllActionsPerformed();
+                return;
+            }
+
+            Action action = plannedActions.Peek();
+
+            if(action.ActionCompleted())
+            {
+                plannedActions.Dequeue();
+            }
+
+            if(ActionPlanActive())
+            {
+                action = plannedActions.Peek();
+
+                bool inRange = false;
+
+                if(action.IsRangeBased() && action.WithinRange())
+                {
+                    inRange = true;
+                }
+
+                if(inRange)
+                {
+                    bool isActionSuccessful = action.DoAction(gameObject);
+
+                    if(!isActionSuccessful)
+                    {
+                        fSM.Pop();
+                        fSM.Push(idle);
+                        // infoBridge.PlanTermination(action);
+                    }
+                }
+                else
+                {
+                    fSM.Pop();
+                    fSM.Push(idle);
+                    // infoBridge.AllActionsPerformed();
+
+                }
+            }
+        };
+    }
+
+    private void RetrieveInfoBridge()
+    {
+        infoBridge = gameObject.GetComponent<I_InfoBridge>();
+    }
+
+    private void LoadPossibleActions()
+    {
+        foreach(Action a in gameObject.GetComponents<Action>())
+        {
+            possibleActions.Add(a);
+        }
+    }
 }

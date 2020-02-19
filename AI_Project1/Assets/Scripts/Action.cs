@@ -1,14 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Action : MonoBehaviour
 {
-    private List<KeyValuePair<string, object>> actionPreconditions;
-    private List<KeyValuePair<string, object>> actionEffects;
+    public List<KeyValuePair<string, object>> actionPreconditions;
+    public List<KeyValuePair<string, object>> actionEffects;
 
-    public float importanceValue = 1.0f;
-
+    // Action cost
+    public float cost = 1.0f;
+    private bool inRange = false;
     public GameObject target;
 
     public Action()
@@ -17,11 +19,19 @@ public abstract class Action : MonoBehaviour
         actionEffects = new List<KeyValuePair<string, object>>();
     }
 
+    public void ResetVariables()
+    {
+        target = null;
+        Reset();
+    }
+
+    public abstract void Reset();
+
     public abstract bool ActionCompleted();
 
     public abstract bool CheckProceduralPrecondition(GameObject agent);
 
-    public abstract bool DoAction();
+    public abstract bool DoAction(GameObject agent);
 
     public void AddActionPrecondition(string key, object value)
     {
@@ -61,5 +71,19 @@ public abstract class Action : MonoBehaviour
         }
 
         actionPreconditions.RemoveAt(indexToRemove);
+    }
+
+    public abstract bool IsRangeBased();
+
+
+    // Make a property?
+    public void setInRange(bool inRange)
+    {
+        this.inRange = inRange;
+    }
+
+    public bool WithinRange()
+    {
+        return inRange;
     }
 }
