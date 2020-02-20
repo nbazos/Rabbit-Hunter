@@ -4,9 +4,28 @@ using UnityEngine;
 
 public class SearchForRabbit : Action
 {
+    private bool rabbitFound = false;
+
+    public SearchForRabbit()
+    {
+        AddActionPrecondition("hasRabbit", false);
+        AddActionEffect("rabbitSeen", true);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
     public override bool ActionCompleted()
     {
-        throw new System.NotImplementedException();
+        return rabbitFound;
     }
 
     public override bool CheckProceduralPrecondition(GameObject agent)
@@ -16,28 +35,27 @@ public class SearchForRabbit : Action
 
     public override bool DoAction(GameObject agent)
     {
-        throw new System.NotImplementedException();
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, Vector3.forward, out hit, 10.0f))
+        {
+            if (hit.collider.tag == "Rabbit")
+            {
+                target = hit.collider.gameObject;
+                rabbitFound = true;
+            }
+        }
+
+        return true;
     }
 
     public override bool IsRangeBased()
     {
-        throw new System.NotImplementedException();
+        return false;
     }
 
     public override void Reset()
     {
-        throw new System.NotImplementedException();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        rabbitFound = false;
     }
 }

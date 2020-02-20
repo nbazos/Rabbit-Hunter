@@ -50,8 +50,8 @@ public class Rabbit : Actor
         List<KeyValuePair<string, object>> goal = new List<KeyValuePair<string, object>>
         {
             new KeyValuePair<string, object>("findCarrot", true),
-            new KeyValuePair<string, object>("storeCarrot", true),
-            new KeyValuePair<string, object>("escapeDanger", true)
+            // new KeyValuePair<string, object>("storeCarrot", true),
+            // new KeyValuePair<string, object>("escapeDanger", true)
         };
 
         return goal;
