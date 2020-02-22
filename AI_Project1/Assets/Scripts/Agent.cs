@@ -24,13 +24,18 @@ public class Agent : MonoBehaviour
         possibleActions = new List<Action>();
         plannedActions = new Queue<Action>();
         actionPlanner = new Planner();
-
+        RetrieveInfoBridge();
+        IdleState();
+        MoveToState();
+        DoActionState();
+        fSM.Push(idle);
+        LoadPossibleActions();
     }
 
     // Update is called once per frame
     void Update()
     {
-        fSM.Update(gameObject);
+        fSM.Update(this.gameObject);
     }
 
     public void AddPossibleAction(Action action)
@@ -124,12 +129,7 @@ public class Agent : MonoBehaviour
             {
                 action = plannedActions.Peek();
 
-                bool inRange = false;
-
-                if(action.IsRangeBased() && action.WithinRange())
-                {
-                    inRange = true;
-                }
+                bool inRange = action.IsRangeBased() ? action.WithinRange() : true; 
 
                 if(inRange)
                 {
@@ -139,16 +139,20 @@ public class Agent : MonoBehaviour
                     {
                         fSM.Pop();
                         fSM.Push(idle);
+                        IdleState();
                         // infoBridge.PlanTermination(action);
                     }
                 }
                 else
                 {
-                    fSM.Pop();
-                    fSM.Push(idle);
-                    // infoBridge.AllActionsPerformed();
-
+                    fSM.Push(moveTo);
                 }
+            }
+            else
+            {
+                fSM.Pop();
+                fSM.Push(idle);
+                // infoBridge.AllActionsPerformed();
             }
         };
     }

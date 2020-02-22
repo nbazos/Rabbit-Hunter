@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LeafNode : MonoBehaviour
+public class LeafNode 
 {
     public LeafNode parent;
     public float runningCost;

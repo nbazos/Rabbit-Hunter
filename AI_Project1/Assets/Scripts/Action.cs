@@ -55,7 +55,7 @@ public abstract class Action : MonoBehaviour
 
     public void AddActionEffect(string key, object value)
     {
-        actionEffects.Add(new KeyValuePair<string, object>());
+        actionEffects.Add(new KeyValuePair<string, object>(key, value));
     }
 
     public void RemoveActionEffect(string key)

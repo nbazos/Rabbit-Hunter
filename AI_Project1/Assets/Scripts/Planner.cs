@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Planner : MonoBehaviour
+public class Planner
 {
     public Queue<Action> Plan(GameObject agent, List<Action> possibleActions, List<KeyValuePair<string, object>> stateOfWorld, List<KeyValuePair<string, object>> goal)
     {

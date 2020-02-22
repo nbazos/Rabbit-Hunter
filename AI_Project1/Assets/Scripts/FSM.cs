@@ -6,14 +6,14 @@ public class FSM
 {
     private Stack<FSMState> states = new Stack<FSMState>();
 
-    public delegate void FSMState(FSM fSM, GameObject gameObject);
+    public delegate void FSMState(FSM fSM, GameObject obj);
 
     // Update is called once per frame
-    public void Update(GameObject gameObject)
+    public void Update(GameObject obj)
     {
         if(states.Peek() != null)
         {
-            states.Peek().Invoke(this, gameObject);
+            states.Peek().Invoke(this, obj);
         }
     }
 
