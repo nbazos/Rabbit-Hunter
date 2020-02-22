@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Hunter : Actor
 {
-    public override List<KeyValuePair<string, object>> SetGoal()
+    public override Dictionary<string, object> SetGoal()
     {
-        List<KeyValuePair<string, object>> goal = new List<KeyValuePair<string, object>>();
+        Dictionary<string, object> goal = new Dictionary<string, object>
+        {
+            { "killRabbit", true }
+        };
 
-        goal.Add(new KeyValuePair<string, object>("killRabbit", true));
-       
         return goal;
     }
 }

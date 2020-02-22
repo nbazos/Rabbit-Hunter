@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Planner
 {
-    public Queue<Action> Plan(GameObject agent, List<Action> possibleActions, List<KeyValuePair<string, object>> stateOfWorld, List<KeyValuePair<string, object>> goal)
+    public Queue<Action> Plan(GameObject agent, List<Action> possibleActions, Dictionary<string, object> stateOfWorld, Dictionary<string, object> goal)
     {
         foreach (Action a in possibleActions)
         {
@@ -78,7 +78,7 @@ public class Planner
 	 * 'runningCost' value where the lowest cost will be the best action
 	 * sequence.
 	 */
-    private bool BuildGraph(LeafNode parent, List<LeafNode> leaves, List<Action> functionalActions, List<KeyValuePair<string, object>> goal)
+    private bool BuildGraph(LeafNode parent, List<LeafNode> leaves, List<Action> functionalActions, Dictionary<string, object> goal)
     {
         bool foundOne = false;
 
@@ -91,7 +91,7 @@ public class Planner
             {
 
                 // apply the action's effects to the parent state
-                List<KeyValuePair<string, object>> currentState = PopulateState(parent.state, action.actionEffects);
+                Dictionary<string, object> currentState = PopulateState(parent.state, action.actionEffects);
                 LeafNode LeafNode = new LeafNode(parent, parent.runningCost + action.cost, currentState, action);
 
                 if (InState(goal, currentState))
@@ -132,7 +132,7 @@ public class Planner
 	 * Check that all items in 'test' are in 'state'. If just one does not match or is not there
 	 * then this returns false.
 	 */
-    private bool InState(List<KeyValuePair<string, object>> test, List<KeyValuePair<string, object>> state)
+    private bool InState(Dictionary<string, object> test, Dictionary<string, object> state)
     {
         bool allMatch = true;
         foreach (KeyValuePair<string, object> t in test)
@@ -155,13 +155,13 @@ public class Planner
     /**
 	 * Apply the stateChange to the currentState
 	 */
-    private List<KeyValuePair<string, object>> PopulateState(List<KeyValuePair<string, object>> currentState, List<KeyValuePair<string, object>> stateChange)
+    private Dictionary<string, object> PopulateState(Dictionary<string, object> currentState, Dictionary<string, object> stateChange)
     {
-        List<KeyValuePair<string, object>> state = new List<KeyValuePair<string, object>>();
+        Dictionary<string, object> state = new Dictionary<string, object>();
         // copy the KVPs over as new objects
         foreach (KeyValuePair<string, object> s in currentState)
         {
-            state.Add(new KeyValuePair<string, object>(s.Key, s.Value));
+            state.Add(s.Key, s.Value);
         }
 
         foreach (KeyValuePair<string, object> change in stateChange)
@@ -180,14 +180,22 @@ public class Planner
 
             if (exists)
             {
-                state.RemoveAll((KeyValuePair<string, object> kvp) => { return kvp.Key.Equals(change.Key); });
-                KeyValuePair<string, object> updated = new KeyValuePair<string, object>(change.Key, change.Value);
-                state.Add(updated);
+                // state.Remove((KeyValuePair<string, object> kvp) => { return kvp.Key.Equals(change.Key); });
+                //state.Remove(change.Key); /// ?
+                //KeyValuePair<string, object> updated = new KeyValuePair<string, object>(change.Key, change.Value);
+                //state.Add(change.Key, change.Value);
+
+                // state.Remove((KeyValuePair<string, object> kvp) => { return kvp.Key.Equals(change.Key); } );
+
+                state[change.Key] = change.Value;
             }
             // if it does not exist in the current state, add it
             else
             {
-                state.Add(new KeyValuePair<string, object>(change.Key, change.Value));
+                
+                // state.Add(change.Key, change.Value);
+
+                state[change.Key] = change.Value;
             }
         }
         return state;

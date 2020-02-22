@@ -21,14 +21,15 @@ public abstract class Actor : MonoBehaviour, I_InfoBridge
         }
     }
 
-    public List<KeyValuePair<string, object>> RetrieveWorldState()
+    public Dictionary<string, object> RetrieveWorldState()
     {
-        List<KeyValuePair<string, object>> worldData = new List<KeyValuePair<string, object>>();
-
-        worldData.Add(new KeyValuePair<string, object>("killRabbit", false));
+        Dictionary<string, object> worldData = new Dictionary<string, object>
+        {
+            { "killRabbit", false }
+        };
 
         return worldData;
     }
 
-    public abstract List<KeyValuePair<string, object>> SetGoal();
+    public abstract Dictionary<string, object> SetGoal();
 }

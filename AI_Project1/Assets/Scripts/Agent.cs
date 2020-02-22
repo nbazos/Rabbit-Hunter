@@ -64,8 +64,8 @@ public class Agent : MonoBehaviour
     {
         idle = (fSM, gameObject) =>
         {
-            List<KeyValuePair<string, object>> stateofWorld = infoBridge.RetrieveWorldState();
-            List<KeyValuePair<string, object>> goal = infoBridge.SetGoal();
+            Dictionary<string, object> stateofWorld = infoBridge.RetrieveWorldState();
+            Dictionary<string, object> goal = infoBridge.SetGoal();
 
             Queue<Action> plan = actionPlanner.Plan(gameObject, possibleActions, stateofWorld, goal);
 

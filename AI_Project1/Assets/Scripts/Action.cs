@@ -5,8 +5,12 @@ using UnityEngine;
 
 public abstract class Action : MonoBehaviour
 {
-    public List<KeyValuePair<string, object>> actionPreconditions;
-    public List<KeyValuePair<string, object>> actionEffects;
+    // public List<KeyValuePair<string, object>> actionPreconditions;
+    // public List<KeyValuePair<string, object>> actionEffects;
+
+    public Dictionary<string, object> actionPreconditions;
+    public Dictionary<string, object> actionEffects;
+
 
     // Action cost
     public float cost = 1.0f;
@@ -15,8 +19,11 @@ public abstract class Action : MonoBehaviour
 
     public Action()
     {
-        actionPreconditions = new List<KeyValuePair<string, object>>();
-        actionEffects = new List<KeyValuePair<string, object>>();
+        //actionPreconditions = new List<KeyValuePair<string, object>>();
+        //actionEffects = new List<KeyValuePair<string, object>>();
+
+        actionPreconditions = new Dictionary<string, object>();
+        actionEffects = new Dictionary<string, object>();
     }
 
     public void ResetVariables()
@@ -35,42 +42,48 @@ public abstract class Action : MonoBehaviour
 
     public void AddActionPrecondition(string key, object value)
     {
-        actionPreconditions.Add(new KeyValuePair<string, object>(key, value));
+        // actionPreconditions.Add(new KeyValuePair<string, object>(key, value));
+        actionPreconditions.Add(key, value);
     }
 
     public void RemoveActionPrecondition(string key)
     {
-        int indexToRemove = 0;
+        //int indexToRemove = 0;
 
-        for (int i = 0; i < actionPreconditions.Count; i++)
-        {
-            if(actionPreconditions[i].Key.Equals(key))
-            {
-                indexToRemove = i;
-            }
-        }
+        //for (int i = 0; i < actionPreconditions.Count; i++)
+        //{
+        //    if(actionPreconditions[i].Key.Equals(key))
+        //    {
+        //        indexToRemove = i;
+        //    }
+        //}
 
-        actionPreconditions.RemoveAt(indexToRemove);
+        //actionPreconditions.RemoveAt(indexToRemove);
+
+        actionPreconditions.Remove(key);
     }
 
     public void AddActionEffect(string key, object value)
     {
-        actionEffects.Add(new KeyValuePair<string, object>(key, value));
+        // actionEffects.Add(new KeyValuePair<string, object>(key, value));
+        actionEffects.Add(key, value);
     }
 
     public void RemoveActionEffect(string key)
     {
-        int indexToRemove = 0;
+        //int indexToRemove = 0;
 
-        for (int i = 0; i < actionEffects.Count; i++)
-        {
-            if (actionEffects[i].Key.Equals(key))
-            {
-                indexToRemove = i;
-            }
-        }
+        //for (int i = 0; i < actionEffects.Count; i++)
+        //{
+        //    if (actionEffects[i].Key.Equals(key))
+        //    {
+        //        indexToRemove = i;
+        //    }
+        //}
 
-        actionPreconditions.RemoveAt(indexToRemove);
+        //actionPreconditions.RemoveAt(indexToRemove);
+
+        actionEffects.Remove(key);
     }
 
     public abstract bool IsRangeBased();

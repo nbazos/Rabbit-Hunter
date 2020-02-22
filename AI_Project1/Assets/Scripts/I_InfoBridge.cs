@@ -4,9 +4,11 @@ using UnityEngine;
 
 public interface I_InfoBridge 
 {
-    List<KeyValuePair<string, object>> RetrieveWorldState();
+    // List<KeyValuePair<string, object>> RetrieveWorldState();
+    Dictionary<string, object> RetrieveWorldState();
 
-    List<KeyValuePair<string, object>> SetGoal();
+    // List<KeyValuePair<string, object>> SetGoal();
+    Dictionary<string, object> SetGoal();
 
     //void PlanInvalid(List<KeyValuePair<string, object>> unsuccesfulGoal);
 
