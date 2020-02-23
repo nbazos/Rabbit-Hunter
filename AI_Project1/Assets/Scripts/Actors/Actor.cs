@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Actor : MonoBehaviour, I_InfoBridge
+public abstract class Actor : MonoBehaviour, GOAP_Interface
 {
     public float speed = 1.0f;
 
@@ -25,7 +25,10 @@ public abstract class Actor : MonoBehaviour, I_InfoBridge
     {
         Dictionary<string, object> worldData = new Dictionary<string, object>
         {
-            { "killRabbit", false }
+            { "killRabbit", false },
+            //{"findCarrot", false },
+            //{"storeCarrot", false }
+            {"hasCarrot", false }
         };
 
         return worldData;

@@ -13,7 +13,7 @@ public class Agent : MonoBehaviour
     private List<Action> possibleActions;
     private Queue<Action> plannedActions;
 
-    private I_InfoBridge infoBridge;
+    private GOAP_Interface iGoap;
 
     private Planner actionPlanner;
 
@@ -64,8 +64,10 @@ public class Agent : MonoBehaviour
     {
         idle = (fSM, gameObject) =>
         {
-            Dictionary<string, object> stateofWorld = infoBridge.RetrieveWorldState();
-            Dictionary<string, object> goal = infoBridge.SetGoal();
+            Dictionary<string, object> stateofWorld = iGoap.RetrieveWorldState();
+            Dictionary<string, object> goal = iGoap.SetGoal();
+
+            // evaluate goal priority here
 
             Queue<Action> plan = actionPlanner.Plan(gameObject, possibleActions, stateofWorld, goal);
 
@@ -99,7 +101,7 @@ public class Agent : MonoBehaviour
                 fSM.Push(idle);
             }
 
-            if(infoBridge.IsAgentAtTarget(action))
+            if(iGoap.IsAgentAtTarget(action))
             {
                 fSM.Pop();
             }
@@ -159,7 +161,7 @@ public class Agent : MonoBehaviour
 
     private void RetrieveInfoBridge()
     {
-        infoBridge = gameObject.GetComponent<I_InfoBridge>();
+        iGoap = gameObject.GetComponent<GOAP_Interface>();
     }
 
     private void LoadPossibleActions()

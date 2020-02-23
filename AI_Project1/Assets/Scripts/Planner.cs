@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Planner
@@ -24,6 +25,7 @@ public class Planner
         List<LeafNode> leaves = new List<LeafNode>();
 
         LeafNode start = new LeafNode(null, 0, stateOfWorld, null);
+        
         bool success = BuildGraph(start, leaves, functionalActions, goal);
 
         if (!success)
@@ -33,20 +35,8 @@ public class Planner
 
         // get the cheapest leaf
         LeafNode cheapest = null;
-        foreach (LeafNode leaf in leaves)
-        {
-            if (cheapest == null)
-            {
-                cheapest = leaf;
-            }
-            else
-            {
-                if (leaf.runningCost < cheapest.runningCost)
-                {
-                    cheapest = leaf;
-                }
-            }
-        }
+        leaves.Sort((A, B) => A.runningCost.CompareTo(B.runningCost));
+        cheapest = leaves[0];
 
         // get its LeafNode and work back through the parents
         List<Action> result = new List<Action>();
@@ -55,7 +45,6 @@ public class Planner
         {
             if (n.action != null)
             {
-                // can do add with list here instead?
                 result.Insert(0, n.action); // insert the action in the front
             }
             n = n.parent;
@@ -106,7 +95,9 @@ public class Planner
                     List<Action> subset = ActionSubset(functionalActions, action);
                     bool found = BuildGraph(LeafNode, leaves, subset, goal);
                     if (found)
+                    {
                         foundOne = true;
+                    }
                 }
             }
         }
@@ -123,7 +114,9 @@ public class Planner
         foreach (Action a in actions)
         {
             if (!a.Equals(removeMe))
+            {
                 subset.Add(a);
+            }
         }
         return subset;
     }
@@ -147,8 +140,11 @@ public class Planner
                 }
             }
             if (!match)
+            {
                 allMatch = false;
+            }
         }
+
         return allMatch;
     }
 
@@ -178,23 +174,14 @@ public class Planner
                 }
             }
 
+            // ? 
             if (exists)
             {
-                // state.Remove((KeyValuePair<string, object> kvp) => { return kvp.Key.Equals(change.Key); });
-                //state.Remove(change.Key); /// ?
-                //KeyValuePair<string, object> updated = new KeyValuePair<string, object>(change.Key, change.Value);
-                //state.Add(change.Key, change.Value);
-
-                // state.Remove((KeyValuePair<string, object> kvp) => { return kvp.Key.Equals(change.Key); } );
-
                 state[change.Key] = change.Value;
             }
             // if it does not exist in the current state, add it
             else
             {
-                
-                // state.Add(change.Key, change.Value);
-
                 state[change.Key] = change.Value;
             }
         }
