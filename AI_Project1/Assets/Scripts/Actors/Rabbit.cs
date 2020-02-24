@@ -16,17 +16,19 @@ public class Rabbit : Actor
     {
         if (!processingNewPlan)
         {
-            foreach (GameObject hunter in GameObject.FindGameObjectsWithTag("Hunter"))
+            GameObject hunter = GameObject.FindGameObjectWithTag("Hunter");
+
+            if (hunter != null)
             {
-                if (Vector3.Distance(this.gameObject.transform.position, hunter.transform.position) < 1.0f)
+
+                if (Vector3.Distance(this.gameObject.transform.position, GameObject.FindGameObjectWithTag("Hunter").transform.position) < 1.5f)
                 {
-                    this.GetComponent<RetrieveCarrot>().cost = 3.0f;
-
-                    this.GetComponent<StoreCarrot>().cost = 3.0f;
-
                     inDanger = true;
                 }
-
+                else
+                {
+                    inDanger = false;
+                }
             }
         }
     }
@@ -35,9 +37,7 @@ public class Rabbit : Actor
     {
         Dictionary<string, object> goal = new Dictionary<string, object>
         {
-            // { "findCarrot", true },
             {"stayAlive", true }
-            // {"stayAlive", true }
         };
 
         return goal;

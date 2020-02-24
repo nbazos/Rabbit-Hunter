@@ -9,7 +9,9 @@ TagManager:
   - Hunter
   - Rabbit
   - Carrot
-  - Ammo Storage
+  - Hidden
+  - Resting
+  - Rabbit Sanctuary
   layers:
   - Default
   - TransparentFX

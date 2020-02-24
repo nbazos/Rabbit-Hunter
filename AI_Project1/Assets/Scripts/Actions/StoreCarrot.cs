@@ -12,8 +12,6 @@ public class StoreCarrot : Action
         AddActionPrecondition("hasCarrot", true);
         AddActionEffect("hasCarrot", false);
         AddActionEffect("stayAlive", true);
-        // AddActionEffect("findCarrot", false);
-        //AddActionEffect("stayAlive", true);
 
         cost = 1.0f;
     }

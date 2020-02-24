@@ -25,10 +25,8 @@ public abstract class Actor : MonoBehaviour, GOAP_Interface
     {
         Dictionary<string, object> worldData = new Dictionary<string, object>
         {
-            { "killRabbit", false },
-            //{"findCarrot", false },
-            //{"storeCarrot", false }
-            {"hasCarrot", false }
+            { "huntRabbit", false },
+            { "hasCarrot", false }
         };
 
         return worldData;

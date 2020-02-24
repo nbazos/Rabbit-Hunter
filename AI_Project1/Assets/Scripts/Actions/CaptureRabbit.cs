@@ -8,7 +8,7 @@ public class CaptureRabbit : Action
 
     public CaptureRabbit()
     {
-        AddActionEffect("killRabbit", true);
+        AddActionEffect("huntRabbit", true);
         cost = 1.0f;
     }
 
@@ -31,19 +31,7 @@ public class CaptureRabbit : Action
 
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
-        //RaycastHit hit;
-
-        //if (Physics.Raycast(transform.position, Vector3.forward, out hit, 10.0f))
-        //{
-        //    if (hit.collider.tag == "Rabbit")
-        //    {
-        //        target = hit.collider.gameObject;
-        //        this.GetComponent<Hunter>().rabbitSeen = true;
-        //    }
-        //}
-
         target = GameObject.FindGameObjectWithTag("Rabbit");
-
 
         return target != null;
     }
@@ -51,8 +39,9 @@ public class CaptureRabbit : Action
     public override bool DoAction(GameObject agent)
     {
         target.GetComponent<Rabbit>().speed = 0.0f;
-
         target.transform.parent = transform;
+
+        this.gameObject.GetComponent<Hunter>().speed = 0.0f;
 
         rabbitCaptured = true;
 
@@ -68,5 +57,6 @@ public class CaptureRabbit : Action
     {
         rabbitCaptured = false;
         target = null;
+        setInRange(false);
     }
 }

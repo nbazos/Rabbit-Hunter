@@ -28,14 +28,14 @@ public class FleeHunter : Action
 
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
-        target = GameObject.FindGameObjectWithTag("Ammo Storage");
+        target = GameObject.FindGameObjectWithTag("Rabbit Sanctuary");
 
         return target != null;
     }
 
     public override bool DoAction(GameObject agent)
     {
-        // this.gameObject.tag = "Hidden";
+        this.gameObject.tag = "Hidden";
 
         escapedHunter = true;
 

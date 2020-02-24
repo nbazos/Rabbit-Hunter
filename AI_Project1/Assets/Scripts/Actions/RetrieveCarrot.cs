@@ -9,7 +9,6 @@ public class RetrieveCarrot : Action
     // Start is called before the first frame update
     void Start()
     {
-        // AddActionEffect("findCarrot", true);
         AddActionEffect("hasCarrot", true);
         cost = 1.0f;
     }
