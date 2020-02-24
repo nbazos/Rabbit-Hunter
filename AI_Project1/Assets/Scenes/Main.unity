@@ -449,7 +449,7 @@ PrefabInstance:
     - target: {fileID: 1528951722690739744, guid: e5d07114b2383b3428b19491a5d3dc9e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.0136142345
+      value: 0.44
       objectReference: {fileID: 0}
     - target: {fileID: 1528951722690739744, guid: e5d07114b2383b3428b19491a5d3dc9e,
         type: 3}
@@ -459,7 +459,7 @@ PrefabInstance:
     - target: {fileID: 1528951722690739744, guid: e5d07114b2383b3428b19491a5d3dc9e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.383
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 1528951722690739744, guid: e5d07114b2383b3428b19491a5d3dc9e,
         type: 3}
@@ -518,7 +518,7 @@ PrefabInstance:
     - target: {fileID: 4043547278097346290, guid: 4d96058e0c9ff2b45aeb25fb0118a9cc,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.005724283
+      value: 4.07
       objectReference: {fileID: 0}
     - target: {fileID: 4043547278097346290, guid: 4d96058e0c9ff2b45aeb25fb0118a9cc,
         type: 3}
@@ -528,7 +528,7 @@ PrefabInstance:
     - target: {fileID: 4043547278097346290, guid: 4d96058e0c9ff2b45aeb25fb0118a9cc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.42
+      value: 4.06
       objectReference: {fileID: 0}
     - target: {fileID: 4043547278097346290, guid: 4d96058e0c9ff2b45aeb25fb0118a9cc,
         type: 3}
@@ -993,6 +993,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+  inDanger: 0
+  processingNewPlan: 0
 --- !u!114 &2031615997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,6 +1017,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2114f8de8f64e94ea4388f396fbde92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cost: 1
+  target: {fileID: 0}
+--- !u!114 &2031616003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2031615994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b47156d2a91c44047a7f82a36206db70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cost: 1

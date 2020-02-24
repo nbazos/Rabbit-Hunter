@@ -50,6 +50,8 @@ public class CaptureRabbit : Action
 
     public override bool DoAction(GameObject agent)
     {
+        target.GetComponent<Rabbit>().speed = 0.0f;
+
         target.transform.parent = transform;
 
         rabbitCaptured = true;

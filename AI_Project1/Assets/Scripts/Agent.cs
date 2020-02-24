@@ -94,7 +94,21 @@ public class Agent : MonoBehaviour
         {
             Action action = plannedActions.Peek();
 
-            if(action.target == null && action.IsRangeBased())
+
+            // rabbit reavaluates plan if hunter is near
+            if (action.gameObject.tag == "Rabbit")
+            {
+                if (action.gameObject.GetComponent<Rabbit>().inDanger)
+                {
+                    fSM.Pop();
+                    fSM.Push(idle);
+                    action.gameObject.GetComponent<Rabbit>().inDanger = false;
+                    action.gameObject.GetComponent<Rabbit>().processingNewPlan = true;
+                    return;
+                }
+            }
+
+            if (action.target == null && action.IsRangeBased())
             {
                 fSM.Pop();
                 fSM.Pop();

@@ -11,7 +11,7 @@ public class FSM
     // Update is called once per frame
     public void Update(GameObject obj)
     {
-        if(states.Peek() != null)
+        if (states.Peek() != null)
         {
             states.Peek().Invoke(this, obj);
         }

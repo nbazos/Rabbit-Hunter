@@ -10,7 +10,7 @@ public abstract class Actor : MonoBehaviour, GOAP_Interface
     {
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, followingAction.target.transform.position, speed * Time.deltaTime);
 
-        if (gameObject.transform.position == followingAction.target.transform.position)
+        if (Vector3.Distance(gameObject.transform.position, followingAction.target.transform.position) < 0.1f)
         {
             followingAction.setInRange(true);
             return true;

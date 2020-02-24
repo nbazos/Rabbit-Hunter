@@ -11,7 +11,7 @@ public class StoreCarrot : Action
     {
         AddActionPrecondition("hasCarrot", true);
         AddActionEffect("hasCarrot", false);
-        AddActionEffect("storeCarrot", true);
+        AddActionEffect("stayAlive", true);
         // AddActionEffect("findCarrot", false);
         //AddActionEffect("stayAlive", true);
 
