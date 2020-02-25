@@ -10,13 +10,16 @@ public class SpawnCarrots : MonoBehaviour
     Vector3 groundPos;
     Vector3 range;
 
-    int maxCarrots = 3;
+    // Maximum carrots allowed at any one time
+    readonly int maxCarrots = 3;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Position of the plane in the world
         groundPos = ground.transform.position;
 
+        // Accurate enough to represent bounds of the plane
         range = transform.localToWorldMatrix.lossyScale * 4.0f;
     }
 
@@ -25,14 +28,17 @@ public class SpawnCarrots : MonoBehaviour
     {
         int numCarrots = 0;
 
+        // Iterate through all the carrots in the scene
         foreach (GameObject carrot in GameObject.FindGameObjectsWithTag("Carrot"))
         {
+            // Only count the carrots which have not been stored by the rabbit
             if(carrot.transform.parent != GameObject.FindGameObjectWithTag("Rabbit Den").transform)
             {
                 numCarrots++;
             }
         }
-
+        
+        // If there are less than 3 carrots in the scene, spawn more randomly so that there are three 
         if (numCarrots < 3)
         {
             for (int i = 0; i < (maxCarrots - numCarrots); i++)
@@ -42,6 +48,5 @@ public class SpawnCarrots : MonoBehaviour
                 Instantiate(carrotPrefab, groundPos + randomPos, carrotPrefab.transform.rotation);
             }
         }
-
     }
 }

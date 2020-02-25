@@ -5,26 +5,26 @@ using UnityEngine;
 public class Agent : MonoBehaviour
 {
     private FSM fSM;
-
-    private FSM.FSMState idle;
-    private FSM.FSMState moveTo;
-    private FSM.FSMState doAction;
+    private FSM.I_FSMState idle;
+    private FSM.I_FSMState moveTo;
+    private FSM.I_FSMState doAction;
 
     private List<Action> possibleActions;
     private Queue<Action> plannedActions;
 
-    private GOAP_Interface iGoap;
+    private I_GOAP iGoap;
 
     private Planner actionPlanner;
 
     // Start is called before the first frame update
     void Start()
     {
+        // initialization of FSM on world start, push the idle state on to the stack so planning begins
         fSM = new FSM();
         possibleActions = new List<Action>();
         plannedActions = new Queue<Action>();
         actionPlanner = new Planner();
-        RetrieveInfoBridge();
+        RetrieveI_GOAP();
         IdleState();
         MoveToState();
         DoActionState();
@@ -38,16 +38,19 @@ public class Agent : MonoBehaviour
         fSM.Update(this.gameObject);
     }
 
+    // Adds an action to the list of possible actions
     public void AddPossibleAction(Action action)
     {
         possibleActions.Add(action);
     }
 
+    // Removes an action from the list of possible actions
     public void RemovePossibleAction(Action action)
     {
         possibleActions.Remove(action);
     }
 
+    // Returns true if there is at least one action planned
     private bool ActionPlanActive()
     {
         if(plannedActions.Count > 0)
@@ -60,21 +63,26 @@ public class Agent : MonoBehaviour
         }
     }
 
+    // Create the "Idle" state, planning happens here
     private void IdleState()
     {
         idle = (fSM, gameObject) =>
         {
+            // Get the world state and goal via the interface
             Dictionary<string, object> stateofWorld = iGoap.RetrieveWorldState();
             Dictionary<string, object> goal = iGoap.SetGoal();
 
-            Queue<Action> plan = actionPlanner.Plan(gameObject, possibleActions, stateofWorld, goal);
+            
+            Queue<Action> planResult = actionPlanner.Plan(gameObject, possibleActions, stateofWorld, goal);
 
-            if(plan != null)
+            // If there are actions remove this state and push the state machine to the "Do Action" state
+            if(planResult != null)
             {
-                plannedActions = plan;
+                plannedActions = planResult;
                 fSM.Pop();
                 fSM.Push(doAction);
             }
+            // Otherwise continue planning
             else
             {
                 fSM.Pop();
@@ -83,11 +91,15 @@ public class Agent : MonoBehaviour
         };
     }
 
+    // Create the "Move To" state
     private void MoveToState()
     {
         moveTo = (fSM, gameObject) =>
         {
+            // Get the first action from the queue
             Action action = plannedActions.Peek();
+
+            // -------INTERUPPTIONS TO PLANNING-------
 
             // Rabbit reevaluates plan if hunter is near
             if (action.gameObject.tag == "Rabbit")
@@ -97,7 +109,7 @@ public class Agent : MonoBehaviour
                     fSM.Pop();
                     fSM.Push(idle);
                     action.gameObject.GetComponent<Rabbit>().inDanger = false;
-                    action.gameObject.GetComponent<Rabbit>().processingNewPlan = true;
+                    action.gameObject.GetComponent<Rabbit>().processingInterruption = true;
                     action.gameObject.GetComponent<RetrieveCarrot>().cost = 3.0f;
                     action.gameObject.GetComponent<StoreCarrot>().cost = 3.0f;
                     return;
@@ -109,8 +121,8 @@ public class Agent : MonoBehaviour
             {
                 fSM.Pop();
                 fSM.Push(idle);
-                action.target.gameObject.GetComponent<Rabbit>().processingNewPlan = false;
-                action.gameObject.GetComponent<Hunter>().processingNewPlan = true;
+                action.target.gameObject.GetComponent<Rabbit>().processingInterruption = false;
+                action.gameObject.GetComponent<Hunter>().processingInterruption = true;
                 action.gameObject.GetComponent<CaptureRabbit>().cost = 4.0f;
                 return;
             }
@@ -123,7 +135,7 @@ public class Agent : MonoBehaviour
                     fSM.Pop();
                     fSM.Push(idle);
                     action.gameObject.tag = "Hunter";
-                    action.gameObject.GetComponent<Hunter>().processingNewPlan = false;
+                    action.gameObject.GetComponent<Hunter>().processingInterruption = false;
                     action.gameObject.GetComponent<CaptureRabbit>().cost = 1.0f;
                     return;
                 }
@@ -140,7 +152,7 @@ public class Agent : MonoBehaviour
                 return;
             }
 
-            // If you have to be within a certain range for the action and the target of the action is null reevaluate plan 
+            // If you have to be within a certain range for the action and the target of the action is null, reevaluate plan 
             if (action.target == null && action.IsRangeBased())
             {
                 fSM.Pop();
@@ -148,18 +160,22 @@ public class Agent : MonoBehaviour
                 fSM.Push(idle);
             }
 
-            // If agent succesfully reached action location, pop off state and move to DoActionState
-            if(iGoap.IsAgentAtTarget(action))
+            // -------INTERUPPTIONS TO PLANNING END-------
+
+            // If agent succesfully reached action location, pop off this state and move to "Do Action" state
+            if (iGoap.IsActorAtTarget(action))
             {
                 fSM.Pop();
             }
         };
     }
 
+    // Create the "Do Action" state
     private void DoActionState()
     {
         doAction = (fSM, gameObject) =>
         {
+            // If there are not actions go back to planning
             if(!ActionPlanActive())
             {
                 fSM.Pop();
@@ -167,8 +183,10 @@ public class Agent : MonoBehaviour
                 return;
             }
 
+            // Store the action in the front of the queue
             Action action = plannedActions.Peek();
 
+            // If the action is completed, remove it from the queue of planned actions
             if(action.ActionCompleted())
             {
                 plannedActions.Dequeue();
@@ -178,12 +196,14 @@ public class Agent : MonoBehaviour
             {
                 action = plannedActions.Peek();
 
+                // Action is only "in range" if it is range based and the agent is within range of it
                 bool inRange = action.IsRangeBased() ? action.WithinRange() : true; 
 
                 if(inRange)
                 {
                     bool isActionSuccessful = action.DoAction(gameObject);
 
+                    // If the action is not successful go back to planning
                     if(!isActionSuccessful)
                     {
                         fSM.Pop();
@@ -191,11 +211,13 @@ public class Agent : MonoBehaviour
                         IdleState();
                     }
                 }
+                // if the agent is not "in range" of the action, push the "Move To" state to process before the "Do Action" state
                 else
                 {
                     fSM.Push(moveTo);
                 }
             }
+            // If there is no action plan remove this state and go to planning
             else
             {
                 fSM.Pop();
@@ -204,11 +226,13 @@ public class Agent : MonoBehaviour
         };
     }
 
-    private void RetrieveInfoBridge()
+    // Get the interface
+    private void RetrieveI_GOAP()
     {
-        iGoap = gameObject.GetComponent<GOAP_Interface>();
+        iGoap = gameObject.GetComponent<I_GOAP>();
     }
 
+    // Get all actions attached to the game object
     private void LoadPossibleActions()
     {
         foreach(Action a in gameObject.GetComponents<Action>())

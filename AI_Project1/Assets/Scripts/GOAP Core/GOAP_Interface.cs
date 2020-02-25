@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface GOAP_Interface 
+// Interface to communicate data between actors and planning/state machine, all actors must implement this
+public interface I_GOAP 
 {
     Dictionary<string, object> RetrieveWorldState();
 
     Dictionary<string, object> SetGoal();
 
-    bool IsAgentAtTarget(Action followingAction);
+    bool IsActorAtTarget(Action actionToOccur);
 }

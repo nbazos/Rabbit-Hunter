@@ -6,8 +6,8 @@ public class StoreCarrot : Action
 {
     bool carrotStored = false;
 
-    // Start is called before the first frame update
-    void Start()
+    // Initialize starting cost and preconditions/effects of this actions
+    public void Start()
     {
         AddActionPrecondition("hasCarrot", true);
         AddActionEffect("hasCarrot", false);
@@ -16,19 +16,16 @@ public class StoreCarrot : Action
         cost = 1.0f;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // Return boolean for this action to represent if it has been completed or not
     public override bool ActionCompleted()
     {
         return carrotStored;
     }
 
+    // Complete the necessary steps so this action can be done
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
+        // Rabbit should drop off carrots at its den
         target = GameObject.FindGameObjectWithTag("Rabbit Den");
 
         return target != null;
@@ -36,10 +33,12 @@ public class StoreCarrot : Action
 
     public override bool DoAction(GameObject agent)
     {
+        // Move the carrot from the rabbit to its den
         GameObject child = transform.GetChild(0).gameObject;
 
         child.transform.parent = GameObject.FindGameObjectWithTag("Rabbit Den").transform;
 
+        // Carrot can no longer be retrieved
         child.GetComponent<Carrot>().carrotActive = false;
 
         carrotStored = true;
@@ -47,15 +46,17 @@ public class StoreCarrot : Action
         return true;
     }
 
+    // Is this action dependent on range?
     public override bool IsRangeBased()
     {
         return true;
     }
 
+    // Reset this action's variables
     public override void Reset()
     {
         carrotStored = false;
         target = null;
-        setInRange(false);
+        SetInRange(false);
     }
 }

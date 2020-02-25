@@ -5,23 +5,24 @@ using UnityEngine;
 public class Rabbit : Actor
 {
     public bool inDanger = false;
-    public bool processingNewPlan = false;
+    public bool processingInterruption = false;
 
     private void Start()
     {
+        // Rabbit is faster than hunter
         speed = 2.0f;
     }
 
     public void Update()
     {
-        if (!processingNewPlan)
+        // Accounting for interruptions in the "Move To" state depending if the hunter is within "Danger Range"
+        if (!processingInterruption)
         {
             GameObject hunter = GameObject.FindGameObjectWithTag("Hunter");
 
             if (hunter != null)
             {
-
-                if (Vector3.Distance(this.gameObject.transform.position, GameObject.FindGameObjectWithTag("Hunter").transform.position) < 1.5f)
+                if (Vector3.Distance(this.gameObject.transform.position, GameObject.FindGameObjectWithTag("Hunter").transform.position) < 1.0f)
                 {
                     inDanger = true;
                 }
@@ -33,6 +34,7 @@ public class Rabbit : Actor
         }
     }
 
+    // Set the goal of this specific actor
     public override Dictionary<string, object> SetGoal()
     {
         Dictionary<string, object> goal = new Dictionary<string, object>

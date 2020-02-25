@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Hunter : Actor
 {
-    public bool processingNewPlan = false;
+    public bool processingInterruption = false;
     public bool rabbitSeen = false;
 
     public void Start()
@@ -14,7 +14,8 @@ public class Hunter : Actor
 
     public void Update()
     {
-        if (!processingNewPlan)
+        // Accounting for interruptions in the "Move To" state depending if the rabbit is not hidden
+        if (!processingInterruption)
         {
             if(GameObject.FindGameObjectWithTag("Rabbit") != null)
             {
@@ -27,6 +28,7 @@ public class Hunter : Actor
         }
     }
 
+    // Set the goal of this specific actor
     public override Dictionary<string, object> SetGoal()
     {
         Dictionary<string, object> goal = new Dictionary<string, object>

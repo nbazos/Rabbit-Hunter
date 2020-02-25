@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class Planner
 {
+    // Return a queue of planned actions for the desired goal
     public Queue<Action> Plan(GameObject agent, List<Action> possibleActions, Dictionary<string, object> stateOfWorld, Dictionary<string, object> goal)
     {
+        // Reset each possible actions variables for accurate planning 
         foreach (Action a in possibleActions)
         {
             a.ResetVariables();
@@ -14,6 +16,7 @@ public class Planner
 
         List<Action> functionalActions = new List<Action>();
         
+        // Check the procedural preconditions of the possible actions and add actions that can be performed 
         foreach(Action a in possibleActions)
         {
             if (a.CheckProceduralPrecondition(agent)) 
@@ -24,111 +27,105 @@ public class Planner
 
         List<LeafNode> leaves = new List<LeafNode>();
 
-        LeafNode start = new LeafNode(null, 0, stateOfWorld, null);
+        LeafNode startingNode = new LeafNode(null, 0, stateOfWorld, null);
         
-        bool success = BuildGraph(start, leaves, functionalActions, goal);
+        // Start processing different action plans to reach the goal  
+        bool success = BuildSolutionTree(startingNode, leaves, functionalActions, goal);
 
+        // If no plan is found 
         if (!success)
         {
             return null;
         }
 
-        // get the cheapest leaf
+        // Get the cheapest LeafNode
         LeafNode cheapest = null;
-        leaves.Sort((A, B) => A.runningCost.CompareTo(B.runningCost));
+        leaves.Sort((A, B) => A.costSoFar.CompareTo(B.costSoFar));
         cheapest = leaves[0];
 
-        // get its LeafNode and work back through the parents
-        List<Action> result = new List<Action>();
-        LeafNode n = cheapest;
-        while (n != null)
+        // Correctly order a list with sequential actions, working nodes through their parents
+        List<Action> orderedResult = new List<Action>();
+        LeafNode node = cheapest;
+        while (node != null)
         {
-            if (n.action != null)
+            if (node.action != null)
             {
-                result.Insert(0, n.action); // insert the action in the front
+                orderedResult.Insert(0, node.action);
             }
-            n = n.parent;
+            // Move to parent LeafNode
+            node = node.parentNode;
         }
-        // we now have this action list in correct order
-
-        Queue<Action> queue = new Queue<Action>();
-        foreach (Action a in result)
+        
+        // Transfer the ordered list to a queue
+        Queue<Action> plannedActions = new Queue<Action>();
+        foreach (Action a in orderedResult)
         {
-            queue.Enqueue(a);
+            plannedActions.Enqueue(a);
         }
 
-        // hooray we have a plan!
-        return queue;
+        // Return the queue of planned actions to reach the goal
+        return plannedActions;
     }
 
-    /**
-	 * Returns true if at least one solution was found.
-	 * The possible paths are stored in the leaves list. Each leaf has a
-	 * 'runningCost' value where the lowest cost will be the best action
-	 * sequence.
-	 */
-    private bool BuildGraph(LeafNode parent, List<LeafNode> leaves, List<Action> functionalActions, Dictionary<string, object> goal)
+    // Returns true if a solution is found and fills the List<LeafNode> branch routes
+    private bool BuildSolutionTree(LeafNode parent, List<LeafNode> leaves, List<Action> functionalActions, Dictionary<string, object> goal)
     {
-        bool foundOne = false;
+        bool solutionFound = false;
 
-        // go through each action available at this LeafNode and see if we can use it here
+        // Iterate through actions from this LeafNode and see if we can use it here
         foreach (Action action in functionalActions)
         {
 
-            // if the parent state has the conditions for this action's preconditions, we can use it here
-            if (InState(action.actionPreconditions, parent.state))
+            // Check if the action's preconditions match the parent's state
+            if (CheckState(action.actionPreconditions, parent.state))
             {
 
-                // apply the action's effects to the parent state
-                Dictionary<string, object> currentState = PopulateState(parent.state, action.actionEffects);
-                LeafNode LeafNode = new LeafNode(parent, parent.runningCost + action.cost, currentState, action);
+                // Add on the action's postconditions or effects
+                Dictionary<string, object> currentState = ApplyChangesToCurrentState(parent.state, action.actionEffects);
+                LeafNode LeafNode = new LeafNode(parent, parent.costSoFar + action.cost, currentState, action);
 
-                if (InState(goal, currentState))
+                // Check for state equivalence with the goal state
+                if (CheckState(goal, currentState))
                 {
-                    // we found a solution!
                     leaves.Add(LeafNode);
-                    foundOne = true;
+                    solutionFound = true;
                 }
+                // Continue the tree to see if remaining actions can reach the goal
                 else
                 {
-                    // not at a solution yet, so test all the remaining actions and branch out the tree
-                    List<Action> subset = ActionSubset(functionalActions, action);
-                    bool found = BuildGraph(LeafNode, leaves, subset, goal);
+                    List<Action> remainingActions = RemainingActions(functionalActions, action);
+                    bool found = BuildSolutionTree(LeafNode, leaves, remainingActions, goal);
                     if (found)
                     {
-                        foundOne = true;
+                        solutionFound = true;
                     }
                 }
             }
         }
 
-        return foundOne;
+        return solutionFound;
     }
 
-    /**
-	 * Create a subset of the actions excluding the removeMe one. Creates a new set.
-	 */
-    private List<Action> ActionSubset(List<Action> actions, Action removeMe)
+    // Return a list of remaining actions except for the invalid one passed in
+    private List<Action> RemainingActions(List<Action> actions, Action invalidAction)
     {
-        List<Action> subset = new List<Action>();
+        List<Action> remainingActions = new List<Action>();
         foreach (Action a in actions)
         {
-            if (!a.Equals(removeMe))
+            if (!a.Equals(invalidAction))
             {
-                subset.Add(a);
+                remainingActions.Add(a);
             }
         }
-        return subset;
+        return remainingActions;
     }
 
-    /**
-	 * Check that all items in 'test' are in 'state'. If just one does not match or is not there
-	 * then this returns false.
-	 */
-    private bool InState(Dictionary<string, object> test, Dictionary<string, object> state)
+    // Check state equivalence
+    private bool CheckState(Dictionary<string, object> testState, Dictionary<string, object> state)
     {
-        bool allMatch = true;
-        foreach (KeyValuePair<string, object> t in test)
+        bool equivalence = true;
+
+        foreach (KeyValuePair<string, object> t in testState)
         {
             bool match = false;
             foreach (KeyValuePair<string, object> s in state)
@@ -141,50 +138,30 @@ public class Planner
             }
             if (!match)
             {
-                allMatch = false;
+                equivalence = false;
             }
         }
 
-        return allMatch;
+        return equivalence;
     }
 
-    /**
-	 * Apply the stateChange to the currentState
-	 */
-    private Dictionary<string, object> PopulateState(Dictionary<string, object> currentState, Dictionary<string, object> stateChange)
+    // Apply changes to the current state and return the updated state
+    private Dictionary<string, object> ApplyChangesToCurrentState(Dictionary<string, object> currentState, Dictionary<string, object> changedState)
     {
-        Dictionary<string, object> state = new Dictionary<string, object>();
-        // copy the KVPs over as new objects
-        foreach (KeyValuePair<string, object> s in currentState)
+        Dictionary<string, object> updatedState = new Dictionary<string, object>();
+        
+        // Transfer the the contents of current state 
+        foreach (KeyValuePair<string, object> current in currentState)
         {
-            state.Add(s.Key, s.Value);
+            updatedState.Add(current.Key, current.Value);
         }
 
-        foreach (KeyValuePair<string, object> change in stateChange)
+        // Update the key-value pair according to the changes
+        foreach (KeyValuePair<string, object> change in changedState)
         {
-            // if the key exists in the current state, update the Value
-            bool exists = false;
-
-            foreach (KeyValuePair<string, object> s in state)
-            {
-                if (s.Equals(change))
-                {
-                    exists = true;
-                    break;
-                }
-            }
-
-            // ? 
-            if (exists)
-            {
-                state[change.Key] = change.Value;
-            }
-            // if it does not exist in the current state, add it
-            else
-            {
-                state[change.Key] = change.Value;
-            }
+            updatedState[change.Key] = change.Value;
         }
-        return state;
+
+        return updatedState;
     }
 }
