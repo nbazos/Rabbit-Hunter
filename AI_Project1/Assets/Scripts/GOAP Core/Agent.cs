@@ -99,7 +99,7 @@ public class Agent : MonoBehaviour
             // Get the first action from the queue
             Action action = plannedActions.Peek();
 
-            // -------INTERUPPTIONS TO PLANNING-------
+            // -------INTERUPPTIONS CAUSING RE-PLANNING-------
 
             // Rabbit reevaluates plan if hunter is near
             if (action.gameObject.tag == "Rabbit")
@@ -160,7 +160,7 @@ public class Agent : MonoBehaviour
                 fSM.Push(idle);
             }
 
-            // -------INTERUPPTIONS TO PLANNING END-------
+            // -------INTERUPPTIONS CAUSING RE-PLANNING END-------
 
             // If agent succesfully reached action location, pop off this state and move to "Do Action" state
             if (iGoap.IsActorAtTarget(action))

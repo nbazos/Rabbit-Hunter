@@ -15,7 +15,7 @@ public class Rabbit : Actor
 
     public void Update()
     {
-        // Accounting for interruptions in the "Move To" state depending if the hunter is within "Danger Range"
+        // Accounting for interruptions in the "Move To" state depending on the Hunter's actions
         if (!processingInterruption)
         {
             GameObject hunter = GameObject.FindGameObjectWithTag("Hunter");
