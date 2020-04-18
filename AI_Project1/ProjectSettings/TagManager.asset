@@ -12,6 +12,7 @@ TagManager:
   - Hidden
   - Resting
   - Rabbit Sanctuary
+  - Camera
   layers:
   - Default
   - TransparentFX
