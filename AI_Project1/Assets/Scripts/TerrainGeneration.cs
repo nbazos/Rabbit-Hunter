@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class TerrainGeneration : MonoBehaviour
@@ -10,6 +11,7 @@ public class TerrainGeneration : MonoBehaviour
     public float scale;
 
     public GameObject terrain;
+    public Image heightMapDisplay;
 
     public int octaves;
     public int period;
@@ -29,7 +31,13 @@ public class TerrainGeneration : MonoBehaviour
         //heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity); // change this
         //renderer.material.mainTexture = heightMap;
 
-        GenerateTerrain(GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity));
+        // Terrain Generation on Start-up
+
+        heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity);
+
+        heightMapDisplay.material.mainTexture = heightMap;
+
+        GenerateTerrain(heightMap);
     }
 
     public Texture2D GeneratefBmNoiseMap(int mapWidth, int mapHeight, float scale, int octaves, float gain, float lacunarity)

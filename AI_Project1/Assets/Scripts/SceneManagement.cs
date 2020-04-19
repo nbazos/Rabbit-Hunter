@@ -8,9 +8,17 @@ public class SceneManagement : MonoBehaviour
     GameObject [] cameras;
     int currentCameraIndex = 0;
 
+    public GameObject hunterShedPrefab;
+    public GameObject rabbitDenPrefab;
+    public GameObject rabbitSanctuaryPrefab;
+    public GameObject rabbitPrefab;
+    public GameObject hunterPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
+        SceneSetup();
+
         cameras = GameObject.FindGameObjectsWithTag("Camera");
 
         for (int i = 0; i < cameras.Length; i++)
@@ -24,6 +32,11 @@ public class SceneManagement : MonoBehaviour
                 cameras[i].SetActive(false);
             }
         }
+    }
+
+    private void SceneSetup()
+    {
+        
     }
 
     // Update is called once per frame

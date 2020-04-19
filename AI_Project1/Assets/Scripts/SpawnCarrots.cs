@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class SpawnCarrots : MonoBehaviour
 {
-    public GameObject ground;
     public GameObject carrotPrefab;
 
-    Vector3 groundPos;
-    Vector3 range;
+    Vector3 terrainPos;
+    Vector3 terrainSize;
+
+    const float TERRAIN_Y_OFFSET = 0.04f;
 
     // Maximum carrots allowed at any one time
     readonly int maxCarrots = 3;
@@ -16,11 +17,8 @@ public class SpawnCarrots : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Position of the plane in the world
-        groundPos = ground.transform.position;
-
-        // Accurate enough to represent bounds of the plane
-        range = transform.localToWorldMatrix.lossyScale * 4.0f;
+        terrainSize = Terrain.activeTerrain.terrainData.size;
+        terrainPos = Terrain.activeTerrain.transform.position;
     }
 
     // Update is called once per frame
@@ -43,9 +41,13 @@ public class SpawnCarrots : MonoBehaviour
         {
             for (int i = 0; i < (maxCarrots - numCarrots); i++)
             {
-                Vector3 randomPos = new Vector3(Random.Range(-range.x, range.x), 0.1f, Random.Range(-range.z, range.z));
+                float x = Random.Range(0, terrainSize.x);
+                float z = Random.Range(0, terrainSize.z);
+                float y = Terrain.activeTerrain.SampleHeight(terrainPos + new Vector3(x, 0, z)) + Terrain.activeTerrain.transform.position.y;
 
-                Instantiate(carrotPrefab, groundPos + randomPos, carrotPrefab.transform.rotation);
+                Vector3 randomPos = new Vector3(x, y + TERRAIN_Y_OFFSET, z);
+
+                Instantiate(carrotPrefab, terrainPos + randomPos, carrotPrefab.transform.rotation);
             }
         }
     }
