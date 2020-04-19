@@ -5,92 +5,125 @@ using UnityEngine;
 
 public class TerrainGeneration : MonoBehaviour
 {
-    public int textureWidth = 256;
-    public int textureHeight = 256;
-    public float scale = 20f;
+    public int textureWidth;
+    public int textureHeight;
+    public float scale;
 
     public GameObject terrain;
 
-    float total = 0.0f;
-    public int octaves = 1;
-    public int period = 2;
+    public int octaves;
+    public int period;
     [HideInInspector] public float frequency;
-    public float amplitude = 2;
-    public float lacunarity = 2.0f;
-    public float gain = 0.65f;
+    public float amplitude;
+    public float lacunarity;
+    public float gain;
 
-    Mesh mesh;
-    Vector3[] vertices;
+    Texture2D heightMap;
 
     // Start is called before the first frame update
     void Start()
     {
         frequency = 1.0f / period;
 
-        mesh = terrain.GetComponent<MeshFilter>().mesh;
-        vertices = mesh.vertices;
+        //Renderer renderer = terrain.GetComponent<Renderer>();
+        //heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity); // change this
+        //renderer.material.mainTexture = heightMap;
 
-        Renderer renderer = terrain.GetComponent<Renderer>();
-        renderer.material.mainTexture = GeneratefBm(); // change this
-
-        //GenerateTerrain();
+        GenerateTerrain(GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity));
     }
 
-    private Texture2D GeneratefBm()
+    public Texture2D GeneratefBmNoiseMap(int mapWidth, int mapHeight, float scale, int octaves, float gain, float lacunarity)
     {
-        Texture2D texture = new Texture2D(textureWidth, textureHeight);
+        float[,] noiseMap = new float[mapWidth, mapHeight];
 
-        for (int pixelX = 0; pixelX < textureWidth; pixelX++)
+        if (scale <= 0)
         {
-            for (int pixelY = 0; pixelY < textureHeight; pixelY++)
+            scale = 0.0001f;
+        }
+
+        float maxNoiseHeight = float.MinValue;
+        float minNoiseHeight = float.MaxValue;
+
+        for (int x = 0; x < mapWidth; x++)
+        {
+            for (int y = 0; y < mapHeight; y++)
             {
-                /*
-                 * fBm
+                float amplitude = 1;
+                float frequency = 1;
+                float noiseHeight = 0;
+
                 for (int i = 0; i < octaves; i++)
                 {
-                    total += CalculateNoise((float)pixelX * frequency, (float)pixelY * frequency) * amplitude;
+                    float sampleX = x / scale * frequency;
+                    float sampleY = y / scale * frequency;
 
-                    frequency *= lacunarity;
+                    float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
+                    noiseHeight += perlinValue * amplitude;
+
                     amplitude *= gain;
+                    frequency *= lacunarity;
                 }
 
-                Color pixelColor = new Color(total, total, total);
+                if (noiseHeight > maxNoiseHeight)
+                {
+                    maxNoiseHeight = noiseHeight;
+                }
+                else if (noiseHeight < minNoiseHeight)
+                {
+                    minNoiseHeight = noiseHeight;
+                }
 
-                texture.SetPixel(pixelX, pixelY, pixelColor);
-                */
-
-                Color color = CalculateNoise(pixelX, pixelY);
-                texture.SetPixel(pixelX, pixelY, color);
+                noiseMap[x, y] = noiseHeight;
             }
         }
 
-        texture.Apply();
-        return texture;
-    }
-
-    private Color CalculateNoise(int x, int y)
-    {
-        float perlinX = (float)x / textureWidth * scale;
-        float perlinY = (float)y / textureHeight * scale;
-
-        float noiseResult = Mathf.PerlinNoise(perlinX, perlinY);
-
-        return new Color (noiseResult, noiseResult, noiseResult);
-
-        // return noiseResult;
-    }
-
-    private void GenerateTerrain()
-    {
-        for (int i = 0; i < vertices.Length; i++)
+        for (int x = 0; x < mapWidth; x++)
         {
-            Vector3 vertex = vertices[i];
-
-            Vector3 normalized = (new Vector2(vertex.x, vertex.z)) / 10.0f + Vector2.one * 0.5f;
-            // vertex.y = 
+            for (int y = 0; y < mapHeight; y++)
+            {
+                noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
+            }
         }
 
-        mesh.vertices = vertices;
+        return CreateTextureFromNoiseValues(noiseMap);
+    }
+
+    private Texture2D CreateTextureFromNoiseValues(float[,] noiseMap)
+    {
+        int textureWidth = noiseMap.GetLength(0);
+        int textureHeight = noiseMap.GetLength(1);
+
+        Texture2D noiseTexture = new Texture2D(textureWidth, textureHeight);
+
+        Color[] color = new Color[textureWidth * textureHeight];
+
+        for (int x = 0; x < textureWidth; x++)
+        {
+            for (int y = 0; y < textureHeight; y++)
+            {
+                color[y * textureWidth + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, y]);
+            }
+        }
+
+        noiseTexture.SetPixels(color);
+        noiseTexture.Apply();
+
+        return noiseTexture;
+    }
+
+    private void GenerateTerrain(Texture2D heightMap)
+    {
+        TerrainData terrainData = terrain.GetComponent<Terrain>().terrainData;
+        float[,] heights = new float[heightMap.width, heightMap.height];
+        for (int x = 0; x < heightMap.width; x++)
+        {
+            for (int y = 0; y < heightMap.width; y++)
+            {
+                heights[x, y] = heightMap.GetPixel(x, y).grayscale;
+            }
+        }
+
+        terrainData.SetHeights(0, 0, heights);
     }
 
     // Update is called once per frame
