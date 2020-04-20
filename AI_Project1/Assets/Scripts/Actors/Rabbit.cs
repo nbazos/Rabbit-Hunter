@@ -15,6 +15,8 @@ public class Rabbit : Actor
 
     public void Update()
     {
+        StickToTerrain();
+
         // Accounting for interruptions in the "Move To" state depending on the Hunter's actions
         if (!processingInterruption)
         {

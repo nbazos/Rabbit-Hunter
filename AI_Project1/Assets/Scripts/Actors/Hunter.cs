@@ -14,6 +14,8 @@ public class Hunter : Actor
 
     public void Update()
     {
+        StickToTerrain();
+
         // Accounting for interruptions in the "Move To" state depending if the rabbit is not hidden
         if (!processingInterruption)
         {

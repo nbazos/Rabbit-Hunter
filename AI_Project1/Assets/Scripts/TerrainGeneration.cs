@@ -27,10 +27,6 @@ public class TerrainGeneration : MonoBehaviour
     {
         frequency = 1.0f / period;
 
-        //Renderer renderer = terrain.GetComponent<Renderer>();
-        //heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity); // change this
-        //renderer.material.mainTexture = heightMap;
-
         // Terrain Generation on Start-up
 
         heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity);

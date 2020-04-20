@@ -34,7 +34,7 @@ public class StoreCarrot : Action
     public override bool DoAction(GameObject agent)
     {
         // Move the carrot from the rabbit to its den
-        GameObject child = transform.GetChild(0).gameObject;
+        GameObject child = transform.GetChild(1).gameObject; // Index of 1 necessary to bypass the asset object child itself
 
         child.transform.parent = GameObject.FindGameObjectWithTag("Rabbit Den").transform;
 

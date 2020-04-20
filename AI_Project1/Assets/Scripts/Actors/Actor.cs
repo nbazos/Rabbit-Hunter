@@ -24,6 +24,13 @@ public abstract class Actor : MonoBehaviour, I_GOAP
         }
     }
 
+    public void StickToTerrain()
+    {
+        Vector3 tempPos = gameObject.transform.position;
+        tempPos.y = Terrain.activeTerrain.SampleHeight(new Vector3(tempPos.x, 0, tempPos.z));
+        gameObject.transform.position = tempPos;
+    }
+
     // Track relevant data elements of the world
     public Dictionary<string, object> RetrieveWorldState()
     {

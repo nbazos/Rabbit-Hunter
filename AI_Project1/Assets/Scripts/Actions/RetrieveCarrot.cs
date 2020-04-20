@@ -31,7 +31,7 @@ public class RetrieveCarrot : Action
 
         foreach (GameObject obj in targets)
         {
-            if (obj.GetComponent<Carrot>().carrotActive)
+            if (obj.transform.GetComponent<Carrot>().carrotActive)
             {
                 float dist = Vector3.Distance(obj.transform.position, gameObject.transform.position);
 

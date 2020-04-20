@@ -31,7 +31,7 @@ public class CaptureRabbit : Action
     public override bool DoAction(GameObject agent)
     {
         // stop the rabbit from moving and attach it to the hunter 
-        target.GetComponent<Rabbit>().speed = 0.0f;
+        target.transform.GetComponent<Rabbit>().speed = 0.0f;
         target.transform.parent = transform;
 
         // stop the hunter from moving because the simulation is over since the rabbit got caught

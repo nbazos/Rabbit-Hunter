@@ -9,8 +9,6 @@ public class SpawnCarrots : MonoBehaviour
     Vector3 terrainPos;
     Vector3 terrainSize;
 
-    const float TERRAIN_Y_OFFSET = 0.04f;
-
     // Maximum carrots allowed at any one time
     readonly int maxCarrots = 3;
 
@@ -45,7 +43,7 @@ public class SpawnCarrots : MonoBehaviour
                 float z = Random.Range(0, terrainSize.z);
                 float y = Terrain.activeTerrain.SampleHeight(terrainPos + new Vector3(x, 0, z)) + Terrain.activeTerrain.transform.position.y;
 
-                Vector3 randomPos = new Vector3(x, y + TERRAIN_Y_OFFSET, z);
+                Vector3 randomPos = new Vector3(x, y, z);
 
                 Instantiate(carrotPrefab, terrainPos + randomPos, carrotPrefab.transform.rotation);
             }
