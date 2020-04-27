@@ -11,12 +11,21 @@ public class Hunter : Actor
 
     public void Start()
     {
-        speed = 1.0f;
+        speed = 2.0f;
     }
 
     public void Update()
     {
         StickToTerrain();
+
+        if(rabbitDetected == null)
+        {
+            gameObject.transform.LookAt(gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position);
+        }
+        else
+        {
+            gameObject.transform.LookAt(rabbitDetected.transform.position);
+        }
 
         // Accounting for interruptions in the "Move To" state depending if the rabbit is not hidden
         if (!processingInterruption)
@@ -30,11 +39,6 @@ public class Hunter : Actor
                 rabbitSeen = false;
             }
         }
-
-        //if (rabbitDetected == null /*&& rabbitSeen*/)
-        //{
-        //    Wander();
-        //}
 
         // DrawLine(gameObject.transform.position, Quaternion.AngleAxis(40, Vector3.forward) * gameObject.transform.forward, gameObject.GetComponent<SphereCollider>().radius, Color.red);
     }
@@ -50,25 +54,9 @@ public class Hunter : Actor
         return goal;
     }
 
-    public IEnumerator WanderAndFindRabbit()
-    {
-        while(true)
-        {
-            Wander();
-
-            if(rabbitDetected != null)
-            {
-                break;
-            }
-
-            // wait for the next frame
-            yield return null;
-        }
-    }
-
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Rabbit" /*&& rabbitDetected == null*/)
+        if (other.tag == "Rabbit")
         {
             Vector3 rabbitDir = other.transform.position - gameObject.transform.position;
             float angle = Vector3.Angle(rabbitDir, gameObject.transform.forward);
@@ -82,6 +70,7 @@ public class Hunter : Actor
                     if (hit.collider.tag == "Rabbit")
                     {
                         rabbitDetected = hit.collider.gameObject;
+                        // gameObject.transform.LookAt(rabbitDetected.transform.position);
                     }
                 }
             }

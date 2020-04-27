@@ -9,7 +9,10 @@ public class CaptureRabbit : Action
     // Initialize starting cost and preconditions/effects of this action
     public void Start()
     {
+        AddActionPrecondition("rabbitFound", true);
+        AddActionEffect("rabbitFound", false);
         AddActionEffect("huntRabbit", true);
+        
         cost = 1.0f;
     }
 
@@ -24,14 +27,7 @@ public class CaptureRabbit : Action
     {
         // target = GameObject.FindGameObjectWithTag("Rabbit");
 
-        if (gameObject.GetComponent<Hunter>().rabbitDetected == null)
-        {
-            StartCoroutine(gameObject.GetComponent<Hunter>().WanderAndFindRabbit());
-        }
-        else
-        {
-            target = gameObject.GetComponent<Hunter>().rabbitDetected;
-        }
+        target = GameObject.FindGameObjectWithTag("Rabbit");
 
         return target != null;
     }

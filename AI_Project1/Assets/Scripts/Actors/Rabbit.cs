@@ -9,8 +9,8 @@ public class Rabbit : Actor
 
     private void Start()
     {
-        // Rabbit is faster than hunter
-        speed = 2.0f;
+        // Rabbit is slightly slower than hunter so that multiple generations can happen in the simulation
+        speed = 1.75f;
     }
 
     public void Update()

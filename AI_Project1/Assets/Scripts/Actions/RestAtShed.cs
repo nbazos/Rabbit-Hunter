@@ -33,7 +33,7 @@ public class RestAtShed : Action
         // Change the tag of the hunter so the rabbit will leave hiding, the hunter will no longer be proessing an interruptiong
         this.gameObject.tag = "Resting";
         this.gameObject.GetComponent<Hunter>().processingInterruption = false;
-        // this.gameObject.GetComponent<Hunter>().rabbitDetected = null;
+        this.gameObject.GetComponent<Hunter>().rabbitDetected = null;
 
         // set this action's boolean
         restingAtShed = true;

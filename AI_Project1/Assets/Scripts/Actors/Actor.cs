@@ -33,30 +33,12 @@ public abstract class Actor : MonoBehaviour, I_GOAP
         gameObject.transform.position = tempPos;
     }
 
-    public void Wander()
-    {
-        // Simulation just started
-        if(wayPoint == Vector3.zero)
-        {
-            CreateWanderPoint();
-        }
-
-        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, wayPoint, speed * Time.deltaTime);
-
-        if (Vector3.Distance(gameObject.transform.position, wayPoint) < 0.5f)
-        {
-            CreateWanderPoint();
-        }
-    }
-
-    public void CreateWanderPoint()
+    public Vector3 CreateWanderPoint()
     {
         wayPoint = Random.insideUnitSphere * Terrain.activeTerrain.terrainData.size.x/2;
-        wayPoint.y = Terrain.activeTerrain.SampleHeight(new Vector3(wayPoint.x, 0, wayPoint.z)); 
+        wayPoint.y = Terrain.activeTerrain.SampleHeight(new Vector3(wayPoint.x, 0, wayPoint.z));
 
-        // don't need to change direction every frame seeing as you walk in a straight line only
-        gameObject.transform.LookAt(wayPoint);
-        // gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, Quaternion.FromToRotation(gameObject.transform.position, wayPoint), Time.deltaTime);
+        return wayPoint;
     }
 
     // Track relevant data elements of the world
