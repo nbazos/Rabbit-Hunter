@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Rabbit : Actor
 {
-    public bool inDanger = false;
-    public bool processingInterruption = false;
+    [HideInInspector] public bool inDanger = false;
+    [HideInInspector] public bool processingInterruption = false;
 
     private void Start()
     {

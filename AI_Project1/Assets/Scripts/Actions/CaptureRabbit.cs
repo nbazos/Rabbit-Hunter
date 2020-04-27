@@ -22,7 +22,11 @@ public class CaptureRabbit : Action
     // Complete the necessary steps so this action can be done
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
-        target = GameObject.FindGameObjectWithTag("Rabbit");
+        // target = GameObject.FindGameObjectWithTag("Rabbit");
+
+        // gameObject.GetComponent<Hunter>().wandering = true;
+
+        target = gameObject.GetComponent<Hunter>().rabbitDetected;
 
         return target != null;
     }
