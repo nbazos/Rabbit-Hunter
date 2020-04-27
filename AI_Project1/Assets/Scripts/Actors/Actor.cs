@@ -7,7 +7,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
     // Speed of actor
     public float speed = 1.0f;
     Vector3 wayPoint;
-    public bool wandering = false;
+    [HideInInspector] public bool wandering;
 
     // Move actor to an action's target 
     public bool IsActorAtTarget(Action followingAction)
@@ -41,13 +41,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
             CreateWanderPoint();
         }
 
-        // Vector3 translation = Vector3.MoveTowards(gameObject.transform.position, wayPoint, 5.0f);
-
-        // gameObject.transform.Translate(translation * Time.deltaTime);
-
-        // gameObject.transform.position += gameObject.transform.TransformDirection(Vector3.forward) * 2.0f * Time.deltaTime;
-
-        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, wayPoint, 2.0f * Time.deltaTime);
+        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, wayPoint, speed * Time.deltaTime);
 
         if (Vector3.Distance(gameObject.transform.position, wayPoint) < 0.5f)
         {

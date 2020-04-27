@@ -24,9 +24,14 @@ public class CaptureRabbit : Action
     {
         // target = GameObject.FindGameObjectWithTag("Rabbit");
 
-        // gameObject.GetComponent<Hunter>().wandering = true;
-
-        target = gameObject.GetComponent<Hunter>().rabbitDetected;
+        if (gameObject.GetComponent<Hunter>().rabbitDetected == null)
+        {
+            StartCoroutine(gameObject.GetComponent<Hunter>().WanderAndFindRabbit());
+        }
+        else
+        {
+            target = gameObject.GetComponent<Hunter>().rabbitDetected;
+        }
 
         return target != null;
     }

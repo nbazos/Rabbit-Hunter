@@ -31,10 +31,10 @@ public class Hunter : Actor
             }
         }
 
-        if (rabbitDetected == null && rabbitSeen)
-        {
-            Wander();
-        }
+        //if (rabbitDetected == null /*&& rabbitSeen*/)
+        //{
+        //    Wander();
+        //}
 
         // DrawLine(gameObject.transform.position, Quaternion.AngleAxis(40, Vector3.forward) * gameObject.transform.forward, gameObject.GetComponent<SphereCollider>().radius, Color.red);
     }
@@ -50,9 +50,25 @@ public class Hunter : Actor
         return goal;
     }
 
+    public IEnumerator WanderAndFindRabbit()
+    {
+        while(true)
+        {
+            Wander();
+
+            if(rabbitDetected != null)
+            {
+                break;
+            }
+
+            // wait for the next frame
+            yield return null;
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Rabbit" && rabbitDetected == null)
+        if (other.tag == "Rabbit" /*&& rabbitDetected == null*/)
         {
             Vector3 rabbitDir = other.transform.position - gameObject.transform.position;
             float angle = Vector3.Angle(rabbitDir, gameObject.transform.forward);

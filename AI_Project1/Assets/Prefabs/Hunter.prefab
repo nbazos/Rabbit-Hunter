@@ -68,6 +68,7 @@ MonoBehaviour:
   wandering: 0
   processingInterruption: 0
   rabbitSeen: 0
+  rabbitDetected: {fileID: 0}
 --- !u!114 &5237696690112394145
 MonoBehaviour:
   m_ObjectHideFlags: 0
