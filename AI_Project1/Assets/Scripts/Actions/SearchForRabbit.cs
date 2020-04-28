@@ -25,14 +25,12 @@ public class SearchForRabbit : Action
     // Complete the necessary steps so this action can be done
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
-        wayPoint.transform.position = gameObject.GetComponent<Hunter>().CreateWanderPoint();
+        if (wayPoint != null)
+        {
+            wayPoint.transform.position = gameObject.GetComponent<Hunter>().CreateWanderPoint();
 
-        target = wayPoint;
-
-        //if (gameObject.GetComponent<Hunter>().rabbitDetected == null)
-        //{
-        //    gameObject.transform.LookAt(target.transform.position);
-        //}
+            target = wayPoint;
+        }
 
         return target != null;
     }

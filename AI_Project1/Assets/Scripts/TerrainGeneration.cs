@@ -6,34 +6,36 @@ using UnityEngine;
 
 public class TerrainGeneration : MonoBehaviour
 {
-    public int textureWidth;
-    public int textureHeight;
-    public float scale;
+    private const int textureWidth = 256;
+    private const int textureHeight = 256;
 
     public GameObject terrain;
     public Image heightMapDisplay;
 
-    public int octaves;
-    public int period;
-    [HideInInspector] public float frequency;
-    public float amplitude;
-    public float lacunarity;
-    public float gain;
-
-    Texture2D heightMap;
+    private Texture2D heightMap;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        frequency = 1.0f / period;
+        // Terrain Generation on start-up
+        GenerateTerrain();
+    }
 
-        // Terrain Generation on Start-up
+    private void GenerateTerrain()
+    {
+        float scale = UnityEngine.Random.Range(450, 550);
+        int octaves = UnityEngine.Random.Range(1, 6);
+        int period = UnityEngine.Random.Range(1, 6); ;
+        float frequency = 1.0f / period;
+        float amplitude = UnityEngine.Random.Range(1, 4);
+        float lacunarity = UnityEngine.Random.Range(1, 3); 
+        float gain = UnityEngine.Random.Range(0.5f, 1f);
 
         heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity);
 
         heightMapDisplay.material.mainTexture = heightMap;
 
-        GenerateTerrain(heightMap);
+        GenerateTerrainFromTexture(heightMap);
     }
 
     public Texture2D GeneratefBmNoiseMap(int mapWidth, int mapHeight, float scale, int octaves, float gain, float lacunarity)
@@ -115,7 +117,7 @@ public class TerrainGeneration : MonoBehaviour
         return noiseTexture;
     }
 
-    private void GenerateTerrain(Texture2D heightMap)
+    private void GenerateTerrainFromTexture(Texture2D heightMap)
     {
         TerrainData terrainData = terrain.GetComponent<Terrain>().terrainData;
         float[,] heights = new float[heightMap.width, heightMap.height];

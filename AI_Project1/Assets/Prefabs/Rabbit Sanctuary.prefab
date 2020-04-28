@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2025690557081210842}
-  - component: {fileID: 348866162587614122}
   m_Layer: 0
   m_Name: Rabbit Sanctuary
   m_TagString: Rabbit Sanctuary
@@ -25,98 +24,85 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6409684575950848807}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.003, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5917830968953400978}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &348866162587614122
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6409684575950848807}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.29388833, y: 0.29891396, z: 1}
-  m_Center: {x: 0.0012564361, y: 0.15956616, z: 0}
---- !u!1001 &5900940653541753196
+--- !u!1001 &6190102015478764973
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 2025690557081210842}
     m_Modifications:
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.158
+      value: 0.301
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2879908143265301367, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+    - target: {fileID: 2590853519822772150, guid: 0e4db7e431140f14ead2f9da37df5202,
         type: 3}
       propertyPath: m_Name
       value: Rabbit Sanctuary Object
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a2a249a81390a134ab9219e2ebd3ee1c, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 0e4db7e431140f14ead2f9da37df5202, type: 3}
 --- !u!4 &5917830968953400978 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 271343711739277310, guid: a2a249a81390a134ab9219e2ebd3ee1c,
+  m_CorrespondingSourceObject: {fileID: 560683950239873855, guid: 0e4db7e431140f14ead2f9da37df5202,
     type: 3}
-  m_PrefabInstance: {fileID: 5900940653541753196}
+  m_PrefabInstance: {fileID: 6190102015478764973}
   m_PrefabAsset: {fileID: 0}

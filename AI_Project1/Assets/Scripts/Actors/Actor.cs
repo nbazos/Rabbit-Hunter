@@ -6,7 +6,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
 {
     // Speed of actor
     public float speed = 1.0f;
-    Vector3 wayPoint;
+
     [HideInInspector] public bool wandering;
 
     // Move actor to an action's target 
@@ -15,7 +15,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, followingAction.target.transform.position, speed * Time.deltaTime);
 
         // Close enough to do the action
-        if (Vector3.Distance(gameObject.transform.position, followingAction.target.transform.position) < 0.1f)
+        if (Vector3.Distance(gameObject.transform.position, followingAction.target.transform.position) < 0.12f)
         {
             followingAction.SetInRange(true);
             return true;
@@ -35,7 +35,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
 
     public Vector3 CreateWanderPoint()
     {
-        wayPoint = Random.insideUnitSphere * Terrain.activeTerrain.terrainData.size.x/2;
+        Vector3 wayPoint = Random.insideUnitSphere * Terrain.activeTerrain.terrainData.size.x/2;
         wayPoint.y = Terrain.activeTerrain.SampleHeight(new Vector3(wayPoint.x, 0, wayPoint.z));
 
         return wayPoint;

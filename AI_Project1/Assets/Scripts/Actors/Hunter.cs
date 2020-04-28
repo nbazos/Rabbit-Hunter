@@ -18,11 +18,11 @@ public class Hunter : Actor
     {
         StickToTerrain();
 
-        if(rabbitDetected == null)
+        if(!gameObject.GetComponent<SearchForRabbit>().ActionCompleted() & gameObject.GetComponent<SearchForRabbit>().wayPoint != null)
         {
             gameObject.transform.LookAt(gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position);
         }
-        else
+        else if(rabbitDetected != null)
         {
             gameObject.transform.LookAt(rabbitDetected.transform.position);
         }

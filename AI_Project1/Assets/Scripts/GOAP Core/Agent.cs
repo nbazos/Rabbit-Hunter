@@ -101,19 +101,14 @@ public class Agent : MonoBehaviour
 
             // -------INTERUPPTIONS CAUSING RE-PLANNING-------
 
-            /*
+            // If rabbit is detected move wandering waypoint to the Hunter's position to immediately pursue rabbit
             if(action.gameObject.tag == "Hunter")
             {
                 if(action.gameObject.GetComponent<Hunter>().rabbitDetected != null)
                 {
-                    fSM.Pop();
-                    fSM.Push(idle);
-                    action.gameObject.GetComponent<Hunter>().processingInterruption = true;
-                    return;
+                    action.gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position = action.gameObject.transform.position;
                 }
             }
-            */
-
 
             // Rabbit reevaluates plan if hunter is near
             if (action.gameObject.tag == "Rabbit")

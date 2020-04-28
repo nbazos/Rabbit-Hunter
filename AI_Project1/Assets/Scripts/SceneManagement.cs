@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class SceneManagement : MonoBehaviour
@@ -13,6 +15,9 @@ public class SceneManagement : MonoBehaviour
     public GameObject rabbitSanctuaryPrefab;
     public GameObject rabbitPrefab;
     public GameObject hunterPrefab;
+
+    public Text generationText;
+    static int generationCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +37,8 @@ public class SceneManagement : MonoBehaviour
                 cameras[i].SetActive(false);
             }
         }
+
+        generationText.text = "Generation #: " + generationCount;
     }
 
     private void SceneSetup()
@@ -49,7 +56,7 @@ public class SceneManagement : MonoBehaviour
         Instantiate(rabbitDenPrefab, rabbitDenPos, rabbitDenPrefab.transform.rotation);
 
         // Rabbit sanctuary
-        Vector3 rabbitSanctuaryPos = terrainPos + new Vector3(3, 0, 3); ;
+        Vector3 rabbitSanctuaryPos = terrainPos + new Vector3(Terrain.activeTerrain.terrainData.size.x - 1, 0, 1); ;
         rabbitSanctuaryPos.y = Terrain.activeTerrain.SampleHeight(new Vector3(rabbitSanctuaryPos.x, 0, rabbitSanctuaryPos.z));
         Instantiate(rabbitSanctuaryPrefab, rabbitSanctuaryPos, rabbitSanctuaryPrefab.transform.rotation);
 
@@ -64,6 +71,15 @@ public class SceneManagement : MonoBehaviour
     void Update()
     {
         CheckCameraSwitch();
+
+        if(GameObject.FindGameObjectWithTag("Hunter") != null)
+        {
+            if (GameObject.FindGameObjectWithTag("Hunter").GetComponent<CaptureRabbit>().ActionCompleted())
+            {
+                generationCount++;
+                SceneManager.LoadScene("Main");
+            }
+        }
     }
 
     private void CheckCameraSwitch()
