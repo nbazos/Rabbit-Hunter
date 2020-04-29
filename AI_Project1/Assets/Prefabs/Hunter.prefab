@@ -64,10 +64,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
-  wandering: 0
+  detectionCircle: {fileID: 0}
+  lineMat: {fileID: 2100000, guid: 8bbe9bddf4af5dc4ca23ef04ca1c64be, type: 2}
   processingInterruption: 0
   rabbitSeen: 0
   rabbitDetected: {fileID: 0}
+  fovLineMat: {fileID: 2100000, guid: 0a6243ecb5ff6b945965fb0cbe750386, type: 2}
+  raycastLineMat: {fileID: 2100000, guid: c52e384937e323346b68168b65b73d52, type: 2}
 --- !u!114 &-8613494172699457185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,6 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cost: 1
   target: {fileID: 0}
+  wayPoint: {fileID: 0}
 --- !u!114 &1911076302912805935
 MonoBehaviour:
   m_ObjectHideFlags: 0

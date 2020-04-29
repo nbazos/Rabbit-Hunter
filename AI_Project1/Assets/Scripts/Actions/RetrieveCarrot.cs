@@ -64,10 +64,24 @@ public class RetrieveCarrot : Action
         // Attach the carrot to the rabbit
         target.transform.parent = transform;
 
+        // Turn on sound collider for a second when the carrot is picked up
+        StartCoroutine(TurnOnSoundCollider());
+
         // Set this action's boolean
         carrotFound = true;
 
         return true;
+    }
+
+    IEnumerator TurnOnSoundCollider()
+    {
+        gameObject.transform.GetChild(1).GetComponent<SphereCollider>().enabled = true;
+        gameObject.GetComponent<LineRenderer>().enabled = true;
+
+        yield return new WaitForSeconds(1f);
+
+        gameObject.transform.GetChild(1).GetComponent<SphereCollider>().enabled = false;
+        gameObject.GetComponent<LineRenderer>().enabled = false;
     }
 
     // Is this action dependent on range?

@@ -1,31 +1,98 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Hunter : Actor
 {
-    [HideInInspector] public bool processingInterruption = false;
     [HideInInspector] public bool rabbitSeen = false;
     float hunterFieldOfVisionAngle = 80.0f;
     [HideInInspector] public GameObject rabbitDetected = null;
 
+    LineRenderer fovLine1;
+    LineRenderer fovLine2;
+    LineRenderer raycastLine;
+    public Material fovLineMat;
+    public Material raycastLineMat;
+    float lineLength;
+
     public void Start()
     {
         speed = 2.0f;
+
+        SetupRaycastLine();
+        SetupFOVLines();
+        DrawDetectionCircle();
+        detectionCircle.enabled = true;
+    }
+
+    private void SetupRaycastLine()
+    {
+        GameObject raycastLineChildObj = new GameObject();
+        raycastLineChildObj.transform.parent = transform;
+        raycastLineChildObj.transform.position = Vector3.zero;
+        raycastLine = raycastLineChildObj.AddComponent<LineRenderer>();
+        raycastLine.material = raycastLineMat;
+        raycastLine.startWidth = 0.05f;
+        raycastLine.endWidth = 0.05f;
+        raycastLine.enabled = false;
+    }
+
+    private void SetupFOVLines()
+    {
+        lineLength = gameObject.GetComponent<SphereCollider>().radius;
+
+        GameObject l1ChildObj = new GameObject();
+        l1ChildObj.transform.parent = transform;
+        l1ChildObj.transform.position = Vector3.zero;
+
+        GameObject l2ChildObj = new GameObject();
+        l2ChildObj.transform.parent = transform;
+        l2ChildObj.transform.position = Vector3.zero;
+
+        fovLine1 = l1ChildObj.AddComponent<LineRenderer>();
+        fovLine1.material = fovLineMat;
+        fovLine1.startWidth = 0.05f;
+        fovLine1.endWidth = 0.05f;
+
+        fovLine2 = l2ChildObj.AddComponent<LineRenderer>();
+        fovLine2.material = fovLineMat;
+        fovLine2.startWidth = 0.05f;
+        fovLine2.endWidth = 0.05f;
+    }
+
+    private void UpdateFOVLines()
+    {
+        Vector3 line1StartPos = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
+
+        fovLine1.SetPosition(0, line1StartPos);
+        fovLine1.SetPosition(1, (Quaternion.AngleAxis(hunterFieldOfVisionAngle / 2.0f, Vector3.up) * gameObject.transform.forward) * lineLength + line1StartPos);
+
+        Vector3 line2StartPos = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
+
+        fovLine2.SetPosition(0, line2StartPos);
+        fovLine2.SetPosition(1, (Quaternion.AngleAxis(-hunterFieldOfVisionAngle / 2.0f, Vector3.up) * gameObject.transform.forward) * lineLength + line2StartPos);
+    }
+
+    private void TurnHunter()
+    {
+        if (!gameObject.GetComponent<SearchForRabbit>().ActionCompleted() && gameObject.GetComponent<SearchForRabbit>().wayPoint != null)
+        {
+            gameObject.transform.LookAt(gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position);
+        }
+        else if (rabbitDetected != null)
+        {
+            gameObject.transform.LookAt(rabbitDetected.transform.position);
+        }
     }
 
     public void Update()
     {
         StickToTerrain();
 
-        if(!gameObject.GetComponent<SearchForRabbit>().ActionCompleted() & gameObject.GetComponent<SearchForRabbit>().wayPoint != null)
-        {
-            gameObject.transform.LookAt(gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position);
-        }
-        else if(rabbitDetected != null)
-        {
-            gameObject.transform.LookAt(rabbitDetected.transform.position);
-        }
+        TurnHunter();
+
+        UpdateFOVLines();
 
         // Accounting for interruptions in the "Move To" state depending if the rabbit is not hidden
         if (!processingInterruption)
@@ -39,8 +106,6 @@ public class Hunter : Actor
                 rabbitSeen = false;
             }
         }
-
-        // DrawLine(gameObject.transform.position, Quaternion.AngleAxis(40, Vector3.forward) * gameObject.transform.forward, gameObject.GetComponent<SphereCollider>().radius, Color.red);
     }
 
     // Set the goal of this specific actor
@@ -65,32 +130,34 @@ public class Hunter : Actor
             {
                 RaycastHit hit;
 
-                if (Physics.Raycast(gameObject.transform.position + new Vector3(0, 0.1f, 0), rabbitDir.normalized, out hit, gameObject.GetComponent<SphereCollider>().radius))
+                Vector3 raycastOffset = gameObject.transform.position + new Vector3(0, 0.2f, 0); // default position is on the bottom of obj for accurate terrain traversal, raise it to get better hits
+
+                if (Physics.Raycast(raycastOffset, rabbitDir.normalized, out hit, gameObject.GetComponent<SphereCollider>().radius))
                 {
+                    StartCoroutine(VisualizeRaycast(raycastOffset, hit.collider.transform.position));
+
                     if (hit.collider.tag == "Rabbit")
                     {
                         rabbitDetected = hit.collider.gameObject;
-                        // gameObject.transform.LookAt(rabbitDetected.transform.position);
                     }
                 }
             }
         }
+        if (other.name == "SoundCollider")
+        {
+            // place the hunters wander waypoint at the location of the last heard sound
+            gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position = other.gameObject.transform.position;
+        }
     }
 
-    private void DrawLine(Vector3 startPos, Vector3 dir, float radius, Color color, float duration = 0.2f)
+    IEnumerator VisualizeRaycast(Vector3 raycastOffset, Vector3 rabbitPos)
     {
-        GameObject sightLine = new GameObject();
-        sightLine.transform.position = startPos;
-        sightLine.AddComponent<LineRenderer>();
-        LineRenderer lineRenderer = sightLine.GetComponent<LineRenderer>();
+        raycastLine.SetPosition(0, raycastOffset);
+        raycastLine.SetPosition(1, rabbitPos);
+        raycastLine.enabled = true;
+        
+        yield return new WaitUntil(() => GameObject.Find("Rabbit(Clone)").tag == "Hidden");
 
-        // lineRenderer.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
-        lineRenderer.SetColors(color, color);
-        lineRenderer.SetWidth(0.5f, 0.5f);
-        lineRenderer.useWorldSpace = false;
-        lineRenderer.SetPosition(0, startPos);
-        lineRenderer.SetPosition(1, dir * radius + startPos);
-
-        GameObject.Destroy(sightLine, duration);
+        raycastLine.enabled = false;
     }
 }

@@ -5,9 +5,12 @@ using UnityEngine;
 public abstract class Actor : MonoBehaviour, I_GOAP
 {
     // Speed of actor
-    public float speed = 1.0f;
+    [HideInInspector] public float speed = 1.0f;
 
-    [HideInInspector] public bool wandering;
+    [HideInInspector] public LineRenderer detectionCircle;
+    public Material lineMat;
+
+    [HideInInspector] public bool processingInterruption = false;
 
     // Move actor to an action's target 
     public bool IsActorAtTarget(Action followingAction)
@@ -24,6 +27,39 @@ public abstract class Actor : MonoBehaviour, I_GOAP
         {
             return false;
         }
+    }
+
+    public void DrawDetectionCircle()
+    {
+        detectionCircle = gameObject.AddComponent<LineRenderer>();
+        detectionCircle.material = lineMat;
+        detectionCircle.useWorldSpace = false;
+
+        int segments = 360;
+        detectionCircle.startWidth = 0.02f;
+        detectionCircle.endWidth = 0.02f;
+        detectionCircle.positionCount = segments + 1;
+
+        int pointCount = segments + 1;
+        Vector3[] points = new Vector3[pointCount];
+
+        for (int i = 0; i < pointCount; i++)
+        {
+            float rad = Mathf.Deg2Rad * (i * 360f / segments);
+
+            if (gameObject.tag == "Rabbit")
+            {
+                points[i] = new Vector3(Mathf.Sin(rad) * gameObject.transform.GetChild(1).GetComponent<SphereCollider>().radius, gameObject.transform.position.y, Mathf.Cos(rad) * gameObject.transform.GetChild(1).GetComponent<SphereCollider>().radius);
+            }
+            else
+            {
+                points[i] = new Vector3(Mathf.Sin(rad) * gameObject.GetComponent<SphereCollider>().radius, gameObject.transform.position.y-0.5f, Mathf.Cos(rad) * gameObject.GetComponent<SphereCollider>().radius);
+            }
+        }
+
+        detectionCircle.SetPositions(points);
+
+        detectionCircle.enabled = false;
     }
 
     public void StickToTerrain()

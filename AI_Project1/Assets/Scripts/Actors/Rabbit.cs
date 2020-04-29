@@ -5,12 +5,13 @@ using UnityEngine;
 public class Rabbit : Actor
 {
     [HideInInspector] public bool inDanger = false;
-    [HideInInspector] public bool processingInterruption = false;
-
+    
     private void Start()
     {
         // Rabbit is slightly slower than hunter so that multiple generations can happen in the simulation
         speed = 1.75f;
+
+        DrawDetectionCircle();
     }
 
     public void Update()

@@ -6,13 +6,13 @@ using UnityEngine;
 // Abstract parent class that all created actions will inherit
 public abstract class Action : MonoBehaviour
 {
-    public Dictionary<string, object> actionPreconditions;
-    public Dictionary<string, object> actionEffects;
+    [HideInInspector] public Dictionary<string, object> actionPreconditions;
+    [HideInInspector] public Dictionary<string, object> actionEffects;
 
     // Action attributes
-    public float cost = 1.0f;
+    [HideInInspector] public float cost = 1.0f;
     private bool inRange = false;
-    public GameObject target;
+    [HideInInspector] public GameObject target;
 
     public Action()
     {
