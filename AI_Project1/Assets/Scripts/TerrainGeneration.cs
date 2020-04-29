@@ -6,38 +6,35 @@ using UnityEngine;
 
 public class TerrainGeneration : MonoBehaviour
 {
+    // These do not need to change given the terrain size
     private const int textureWidth = 256;
     private const int textureHeight = 256;
 
     public GameObject terrain;
     public Image heightMapDisplay;
 
-    private Texture2D heightMap;
-
-    // Start is called before the first frame update
     void Awake()
     {
-        // Terrain Generation on start-up
+        // Terrain Generation on start-up before anything else
         GenerateTerrain();
     }
 
     private void GenerateTerrain()
     {
-        float scale = UnityEngine.Random.Range(450, 550);
+        // Randomly generate Fractional Brownian Motion Values
+        float scale = UnityEngine.Random.Range(450f, 550f);
         int octaves = UnityEngine.Random.Range(1, 6);
-        int period = UnityEngine.Random.Range(1, 6); ;
-        float frequency = 1.0f / period;
-        float amplitude = UnityEngine.Random.Range(1, 4);
-        float lacunarity = UnityEngine.Random.Range(1, 3); 
         float gain = UnityEngine.Random.Range(0.5f, 1f);
+        float lacunarity = UnityEngine.Random.Range(1f, 3f); 
 
-        heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity);
+        Texture2D heightMap = GeneratefBmNoiseMap(textureWidth, textureHeight, scale, octaves, gain, lacunarity);
 
         heightMapDisplay.material.mainTexture = heightMap;
 
         GenerateTerrainFromTexture(heightMap);
     }
 
+    // Reference: Procedural Terrain Generation series by Sebastian Lague (specifically Episode 2 and 3)
     public Texture2D GeneratefBmNoiseMap(int mapWidth, int mapHeight, float scale, int octaves, float gain, float lacunarity)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -50,21 +47,24 @@ public class TerrainGeneration : MonoBehaviour
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
 
+        // Fill noiseMap 2D array
         for (int x = 0; x < mapWidth; x++)
         {
             for (int y = 0; y < mapHeight; y++)
             {
+                // set these to one because we will be using gain and lacunarity to modify them
                 float amplitude = 1;
                 float frequency = 1;
                 float noiseHeight = 0;
 
+                // Use perlin noise value for each octave
                 for (int i = 0; i < octaves; i++)
                 {
                     float sampleX = x / scale * frequency;
                     float sampleY = y / scale * frequency;
 
-                    float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
-                    noiseHeight += perlinValue * amplitude;
+                    float perlinNoiseValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
+                    noiseHeight += perlinNoiseValue * amplitude;
 
                     amplitude *= gain;
                     frequency *= lacunarity;
@@ -91,11 +91,14 @@ public class TerrainGeneration : MonoBehaviour
             }
         }
 
+        // Create a Texture2D from noise map and return to generate terrain
         return CreateTextureFromNoiseValues(noiseMap);
     }
 
     private Texture2D CreateTextureFromNoiseValues(float[,] noiseMap)
     {
+        // Set grayscale gradient for the texture using the passed in noice map
+
         int textureWidth = noiseMap.GetLength(0);
         int textureHeight = noiseMap.GetLength(1);
 
@@ -117,24 +120,21 @@ public class TerrainGeneration : MonoBehaviour
         return noiseTexture;
     }
 
+    // Reference: Unity 5 - Create Terrain From Texture (Works at Runtime too) by Creagines
     private void GenerateTerrainFromTexture(Texture2D heightMap)
     {
+        // Loop through the texture and store heights based on grayscale values
+
         TerrainData terrainData = terrain.GetComponent<Terrain>().terrainData;
         float[,] heights = new float[heightMap.width, heightMap.height];
         for (int x = 0; x < heightMap.width; x++)
         {
-            for (int y = 0; y < heightMap.width; y++)
+            for (int y = 0; y < heightMap.height; y++)
             {
                 heights[x, y] = heightMap.GetPixel(x, y).grayscale;
             }
         }
 
         terrainData.SetHeights(0, 0, heights);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

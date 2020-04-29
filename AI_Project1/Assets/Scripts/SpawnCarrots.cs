@@ -41,7 +41,7 @@ public class SpawnCarrots : MonoBehaviour
             {
                 float x = Random.Range(0, terrainSize.x - 1);
                 float z = Random.Range(0, terrainSize.z - 1);
-                float y = Terrain.activeTerrain.SampleHeight(terrainPos + new Vector3(x, 0, z)) + Terrain.activeTerrain.transform.position.y;
+                float y = Terrain.activeTerrain.SampleHeight(terrainPos + new Vector3(x, 0, z)) + Terrain.activeTerrain.transform.position.y; // Spawn carrot on terrain
 
                 Vector3 randomPos = new Vector3(x, y, z);
 

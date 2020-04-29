@@ -64,7 +64,7 @@ public class RetrieveCarrot : Action
         // Attach the carrot to the rabbit
         target.transform.parent = transform;
 
-        // Turn on sound collider for a second when the carrot is picked up
+        // Turn on sound collider and associated visualization for a second when the carrot is picked up
         StartCoroutine(TurnOnSoundCollider());
 
         // Set this action's boolean

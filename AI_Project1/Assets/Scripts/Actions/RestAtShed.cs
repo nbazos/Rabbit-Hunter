@@ -30,7 +30,7 @@ public class RestAtShed : Action
     // Do the action itself (if range is required for this action then you are already at the necessary location)
     public override bool DoAction(GameObject agent)
     {
-        // Change the tag of the hunter so the rabbit will leave hiding, the hunter will no longer be proessing an interruptiong
+        // Change the tag of the hunter so the rabbit will leave hiding, the hunter will no longer be proessing an interruption
         this.gameObject.tag = "Resting";
         this.gameObject.GetComponent<Hunter>().processingInterruption = false;
         this.gameObject.GetComponent<Hunter>().rabbitDetected = null;

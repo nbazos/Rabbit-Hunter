@@ -18,17 +18,20 @@ public class SceneManagement : MonoBehaviour
 
     public Text generationText;
     static int generationCount = 0;
+    static int prevCameraIndex = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Placement of necessary game objects
         SceneSetup();
 
+        // Set the active cameras on start-up
         cameras = GameObject.FindGameObjectsWithTag("Camera");
 
         for (int i = 0; i < cameras.Length; i++)
         {
-            if(i == 0)
+            if(i == prevCameraIndex)
             {
                 cameras[i].SetActive(true);
             }
@@ -74,8 +77,10 @@ public class SceneManagement : MonoBehaviour
 
         if(GameObject.FindGameObjectWithTag("Hunter") != null)
         {
+            // Check if the rabbit was captured and re-load the scene as a new generation
             if (GameObject.FindGameObjectWithTag("Hunter").GetComponent<CaptureRabbit>().ActionCompleted())
             {
+                prevCameraIndex = currentCameraIndex; // Don't change camera on scene reload
                 generationCount++;
                 SceneManager.LoadScene("Main");
             }

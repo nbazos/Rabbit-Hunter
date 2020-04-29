@@ -28,6 +28,7 @@ public class Hunter : Actor
 
     private void SetupRaycastLine()
     {
+        // Initialize empty child object and attach LineRenderer component, set needed values
         GameObject raycastLineChildObj = new GameObject();
         raycastLineChildObj.transform.parent = transform;
         raycastLineChildObj.transform.position = Vector3.zero;
@@ -40,6 +41,8 @@ public class Hunter : Actor
 
     private void SetupFOVLines()
     {
+        // Initialize empty child objects and attach LineRenderer components, set needed values
+
         lineLength = gameObject.GetComponent<SphereCollider>().radius;
 
         GameObject l1ChildObj = new GameObject();
@@ -63,6 +66,8 @@ public class Hunter : Actor
 
     private void UpdateFOVLines()
     {
+        // Update FOV lines so that they are correctly associated with hunter facing direction
+
         Vector3 line1StartPos = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
 
         fovLine1.SetPosition(0, line1StartPos);
@@ -76,6 +81,8 @@ public class Hunter : Actor
 
     private void TurnHunter()
     {
+        // Have the hunter face waypoints or the rabbit depending if it is detected or not
+
         if (!gameObject.GetComponent<SearchForRabbit>().ActionCompleted() && gameObject.GetComponent<SearchForRabbit>().wayPoint != null)
         {
             gameObject.transform.LookAt(gameObject.GetComponent<SearchForRabbit>().wayPoint.transform.position);
@@ -125,13 +132,16 @@ public class Hunter : Actor
         {
             Vector3 rabbitDir = other.transform.position - gameObject.transform.position;
             float angle = Vector3.Angle(rabbitDir, gameObject.transform.forward);
-
+            
+            // Check if rabbit is within field of view
             if (angle < hunterFieldOfVisionAngle / 2.0f)
             {
                 RaycastHit hit;
 
                 Vector3 raycastOffset = gameObject.transform.position + new Vector3(0, 0.2f, 0); // default position is on the bottom of obj for accurate terrain traversal, raise it to get better hits
 
+
+                // Check for unobstructed sight line
                 if (Physics.Raycast(raycastOffset, rabbitDir.normalized, out hit, gameObject.GetComponent<SphereCollider>().radius))
                 {
                     StartCoroutine(VisualizeRaycast(raycastOffset, hit.collider.transform.position));
@@ -156,6 +166,7 @@ public class Hunter : Actor
         raycastLine.SetPosition(1, rabbitPos);
         raycastLine.enabled = true;
         
+        // Erase the visualization if the rabbit escaped to the rabbit sanctuary
         yield return new WaitUntil(() => GameObject.Find("Rabbit(Clone)").tag == "Hidden");
 
         raycastLine.enabled = false;

@@ -101,7 +101,7 @@ public class Agent : MonoBehaviour
 
             // -------INTERUPPTIONS CAUSING RE-PLANNING-------
 
-            // If rabbit is detected move wandering waypoint to the Hunter's position to immediately pursue rabbit
+            // If rabbit is detected move wandering waypoint to the Hunter's position to immediately pursue rabbit...(does not cause re-planning, finishes action early instead)
             if(action.gameObject.tag == "Hunter")
             {
                 if(action.gameObject.GetComponent<Hunter>().rabbitDetected != null)

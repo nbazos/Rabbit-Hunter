@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SearchForRabbit : Action
 {
-    private bool rabbitFound = false;
+    bool rabbitFound = false;
     [HideInInspector] public GameObject wayPoint;
 
     // Initialize starting cost and preconditions/effects of this action
@@ -25,6 +25,7 @@ public class SearchForRabbit : Action
     // Complete the necessary steps so this action can be done
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
+        // Set wandering waypoint
         if (wayPoint != null)
         {
             wayPoint.transform.position = gameObject.GetComponent<Hunter>().CreateWanderPoint();
@@ -38,6 +39,7 @@ public class SearchForRabbit : Action
     // Do the action itself (if range is required for this action then you are already at the necessary location)
     public override bool DoAction(GameObject agent)
     {
+        // If the rabbit has not been detected keep wandering
         if (gameObject.GetComponent<Hunter>().rabbitDetected != null)
         {
             rabbitFound = true;

@@ -36,11 +36,13 @@ public class StoreCarrot : Action
         // Move the carrot from the rabbit to its den
         GameObject child = transform.GetChild(2).gameObject; // Index of 2 necessary to bypass the asset object child itself and the sound collider
 
+        // Attach carrot to the rabbit den
         child.transform.parent = GameObject.FindGameObjectWithTag("Rabbit Den").transform;
 
         // Carrot can no longer be retrieved
         child.GetComponent<Carrot>().carrotActive = false;
 
+        // set this action's boolean
         carrotStored = true;
 
         return true;

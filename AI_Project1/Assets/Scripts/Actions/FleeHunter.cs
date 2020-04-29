@@ -30,7 +30,7 @@ public class FleeHunter : Action
     // Do the action itself (if range is required for this action then you are already at the necessary location)
     public override bool DoAction(GameObject agent)
     {
-        // set the hunter's tag to hidden so that the rabbit will search for carrots again
+        // set the rabbit's tag to hidden so that the hunter return tot he hunter shed
         this.gameObject.tag = "Hidden";
 
         // set this action's boolean

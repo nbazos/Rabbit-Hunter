@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CaptureRabbit : Action
 {
-    private bool rabbitCaptured = false;
+    bool rabbitCaptured = false;
 
     // Initialize starting cost and preconditions/effects of this action
     public void Start()
@@ -26,8 +26,6 @@ public class CaptureRabbit : Action
     // Complete the necessary steps so this action can be done
     public override bool CheckProceduralPrecondition(GameObject agent)
     {
-        // target = GameObject.FindGameObjectWithTag("Rabbit");
-
         target = GameObject.FindGameObjectWithTag("Rabbit");
 
         return target != null;

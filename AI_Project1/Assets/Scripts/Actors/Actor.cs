@@ -29,6 +29,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
         }
     }
 
+    // Reference: Use Unity's LineRenderer to draw a circle on a GameObject by Loek van den Ouweland
     public void DrawDetectionCircle()
     {
         detectionCircle = gameObject.AddComponent<LineRenderer>();
@@ -47,6 +48,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
         {
             float rad = Mathf.Deg2Rad * (i * 360f / segments);
 
+            // Rabbit prefab needs to be handled differently as the detection circle is for its sound collider
             if (gameObject.tag == "Rabbit")
             {
                 points[i] = new Vector3(Mathf.Sin(rad) * gameObject.transform.GetChild(1).GetComponent<SphereCollider>().radius, gameObject.transform.position.y, Mathf.Cos(rad) * gameObject.transform.GetChild(1).GetComponent<SphereCollider>().radius);
@@ -64,6 +66,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
 
     public void StickToTerrain()
     {
+        // Set the correct y for the actor traversing the terrain
         Vector3 tempPos = gameObject.transform.position;
         tempPos.y = Terrain.activeTerrain.SampleHeight(new Vector3(tempPos.x, 0, tempPos.z));
         gameObject.transform.position = tempPos;
@@ -71,6 +74,7 @@ public abstract class Actor : MonoBehaviour, I_GOAP
 
     public Vector3 CreateWanderPoint()
     {
+        // Place wander points within the area of the terrain
         Vector3 wayPoint = Random.insideUnitSphere * Terrain.activeTerrain.terrainData.size.x/2;
         wayPoint.y = Terrain.activeTerrain.SampleHeight(new Vector3(wayPoint.x, 0, wayPoint.z));
 
